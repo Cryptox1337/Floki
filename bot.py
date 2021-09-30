@@ -3,54 +3,27 @@ import traceback
 
 from disnake.ext import commands, tasks
 import disnake
+import os
 
 
 SLASH_COMMAND_GUILDS = (
-    858852553545613322,
-    415191587144859649,
+	858852553545613322,
+	415191587144859649,
 )
 
 class Floki(commands.Bot):
-    def __init__(self, **kwargs):
-        super().__init__(
-            command_prefix=commands.when_mentioned_or('?'),
-            intents=disnake.Intents.all(),
-            test_guilds=SLASH_COMMAND_GUILDS,
-            **kwargs
-        )
-        self.startup = disnake.utils.utcnow()
+	def __init__(self, **kwargs):
+		super().__init__(
+			command_prefix=commands.when_mentioned_or('?'),
+			intents=disnake.Intents.all(),
+			test_guilds=SLASH_COMMAND_GUILDS,
+			**kwargs
+		)
+		self.startup = disnake.utils.utcnow()
 
-    async def on_ready(self):
-        print(f'Logged on as {self.user} (ID: {self.user.id})')
-    
-    async def on_slash_command_error(self, interaction: disnake.ApplicationCommandInteraction, exception: commands.CommandError) -> None:
-        if interaction.response.is_done():
-            m = interaction.followup.send
-        else:
-            m = interaction.response.send_message
+		for filename in os.listdir("cogs"):
+			if filename.endswith(".py"):
+				self.load_extension(f"cogs.{filename[:-3]}")
 
-        if isinstance(exception, RuntimeError):
-            return await m(exception, ephemeral=True)
-
-        elif not interaction.application_command.has_error_handler() or interaction.application_command.cog.has_slash_error_handler():
-            now = disnake.utils.utcnow().timestamp()
-            content = f'Unknown error happen. Error timestamp: {now}'
-            if interaction.response.is_done():
-                await interaction.followup.send(content, ephemeral=True)
-            else:
-                await interaction.response.send_message(content, ephemeral=True)
-            tb = '\n'.join(traceback.format_exception(type(exception), exception, exception.__traceback__))
-            await self.owner.send((
-                '```py\n'
-                f'{interaction.user = }\n'
-                f'{interaction.channel.id = }\n'
-                f'{interaction.application_command.name = }\n'
-                f'{interaction.options = }\n'
-                '```'
-            ))
-            await self.owner.send(**(await safe_send_prepare(f'```py\n{tb}\n```')))
-
-        else:
-            return await super().on_slash_command_error(interaction, exception)
-    def ids(self, *id_list):
-        return list(set((*id_list, *self.owner_ids)))
+	async def on_ready(self):
+		print(f'Logged on as {self.user} (ID: {self.user.id})')
