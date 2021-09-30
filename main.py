@@ -3,4 +3,4 @@
 from bot import Floki
 import config
 
-Floki().run(config.values.token)
+Floki().run(config.values.TOKEN)
