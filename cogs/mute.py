@@ -83,6 +83,11 @@ class Mute(commands.Cog):
 				colour=RED,
 				description=(await get_lang(inter.guild, 'MUTE_ALREADY_MUTED')).format(user.name)
 			)
+		elif status == "user_not_exist":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
+			)
 		else:
 			embed = disnake.Embed(
 				colour=RED,
@@ -96,6 +101,11 @@ async def mute(guild, author, user, duration, reason):
 	server = await Guilds.get(guild_id=guild.id)
 	role = disnake.utils.get(guild.roles, id=server.mute_role)
 	mute_response = await getResponseChannel(guild, "mute")
+
+	exist = guild.get_member(user.id)
+
+	if not exist:
+		return "user_not_exist"
 
 	if not role:
 		perms = disnake.Permissions(send_messages=False, speak=False)
