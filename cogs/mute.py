@@ -57,14 +57,14 @@ class Mute(commands.Cog):
 
 		
 	@commands.slash_command(name = "mute", description="mute a user")
-	async def set_language(
+	async def mute(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User,
-		reason: str = Param("no reason", desc="The optional argument"),
-		hours: int = Param(0, desc="The optional argument"),
-		minutes: int = Param(0, desc="The optional argument"),
-		seconds: int = Param(0, desc="The optional argument"),
+		reason: str = Param("no reason", desc="reason for the mute"),
+		hours: int = Param(0, desc="enter a number of hours"),
+		minutes: int = Param(0, desc="enter a number of minutes"),
+		seconds: int = Param(0, desc="enter a number of seconds"),
 	):
 		duration = (hours * 60 * 60) + (minutes * 60) + seconds
 
@@ -89,8 +89,7 @@ class Mute(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
-		if embed:
-			await inter.response.send_message(embed=embed)
+		await inter.response.send_message(embed=embed)
 
 
 async def mute(guild, author, user, duration, reason):
