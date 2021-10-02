@@ -14,6 +14,15 @@ class Utils(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
+async def getIsUserBanned(guild, user_id):
+	banned_users = await guild.bans()
+	for ban_entry in banned_users:
+		user_object = ban_entry.user
+		if user_object.id == user_id:
+			return True
+
+	return False
+
 async def getNowUTCDate():
 	date = datetime.fromtimestamp(int(datetime.utcnow().timestamp()))
 

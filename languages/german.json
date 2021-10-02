@@ -11,6 +11,10 @@
 	"WARN_TITLE": "Benutzer verwarnt!",
 	"WARN_TEXT": "{0} wurde erfolgreich verwarnt!",
 
+	"BAN_TITLE": "Benutzer gebannt!",
+	"BAN_TEXT": "Benutzer {0} wurde erfolgreich gebannt!",
+	"ALREADY_BANNED": "Dieser Benutzer ist bereits gebannt",
+
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Grund",
