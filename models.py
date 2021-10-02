@@ -14,7 +14,7 @@ class Users(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
 	user_id = fields.BigIntField(null=False)
-
+	warns = fields.IntField(null=False, default=0)
 
 class Response_Channels(Model):
 	id = fields.IntField(pk=True)
@@ -35,6 +35,14 @@ class Mutes(Model):
 	status = fields.CharField(null=False, max_length=255, default="muted")
 
 class Kicks(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	user_id = fields.BigIntField(null=False)
+	author = fields.BigIntField(null=False)
+	reason = fields.CharField(null=False, max_length=255)
+	date = fields.DatetimeField(null=False)
+	
+class Warns(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
 	user_id = fields.BigIntField(null=False)

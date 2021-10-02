@@ -8,10 +8,14 @@
 	"KICK_TITLE": "User kicked!",
 	"KICK_TEXT": "{0} was successfully kicked!",
 
+	"WARN_TITLE": "User warned!",
+	"WARN_TEXT": "{0} was successfully warned!",
+
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Reason",
 	"GENERAL_DURATION": "Duration",
+	"GENERAL_COUNT": "Count",
 
 	"USER_NOT_EXIST": "This user does not exist on this server!",
 	"UNKNOWN_ERROR": "Unknown error. Please contact support!"
