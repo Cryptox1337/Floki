@@ -3,7 +3,6 @@ import disnake
 from disnake.ext import commands
 from disnake.ext.commands import Param
 from models import *
-from cogs.utils import *
 
 class Config_Set(commands.Cog):
 	def __init__(self, bot):
