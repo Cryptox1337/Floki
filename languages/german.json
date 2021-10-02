@@ -5,10 +5,14 @@
 	"UNMUTE_TITLE": "Benutzer freigegeben",
 	"UNMUTE_TEXT": "{0} wurde erfolgreich freigegeben!",
 
+	"KICK_TITLE": "Benutzer gekickt!",
+	"KICK_TEXT": "{0} wurde erfolgreich gekickt!",
+
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Grund",
 	"GENERAL_DURATION": "Dauer",
 
+	"USER_NOT_EXIST": "Dieser Benutzer existiert nicht auf diesem Server!",
 	"UNKNOWN_ERROR": "Unbekannter Fehler. Bitte kontaktieren Sie den Support!"
 }

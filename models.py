@@ -28,3 +28,11 @@ class Mutes(Model):
 	date = fields.DatetimeField(null=False)
 	end_date = fields.DatetimeField(null=False)
 	status = fields.CharField(null=False, max_length=255, default="muted")
+
+class Kicks(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	user_id = fields.BigIntField(null=False)
+	author = fields.BigIntField(null=False)
+	reason = fields.CharField(null=False, max_length=255)
+	date = fields.DatetimeField(null=False)
