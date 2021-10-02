@@ -1,0 +1,142 @@
+
+import disnake
+from disnake.ext import commands, tasks
+from disnake.ext.commands import Param
+from models import *
+from colors import *
+from cogs.utils import *
+import asyncio
+
+class Mute(commands.Cog):
+	def __init__(self, bot):
+		self.bot: commands.Bot = bot
+		self.mute_loop.start()
+
+	@tasks.loop(minutes=0.1)
+	async def mute_loop(self):
+		for guild in self.bot.guilds:
+			server = await Guilds.get(guild_id=guild.id)
+			role = disnake.utils.get(guild.roles, id=server.mute_role)
+			mute_response = await getResponseChannel(guild, "mute")
+			mute_list = await Mutes.filter(guild_id=guild.id, status="muted")
+			
+			if not role:
+				perms = disnake.Permissions(send_messages=False, speak=False)
+				role = await guild.create_role(name="muted", permissions=perms)
+				server.mute_role = role.id
+				await server.save()
+
+			for muted in mute_list:
+				user = guild.get_member(muted.user_id)
+				if user:
+					if await getDuration(muted.end_date) > 0 :
+						if not role in user.roles:
+							await user.add_roles(role, reason=muted.reason)
+					else:
+						if role in user.roles:
+							await user.remove_roles(role, reason="mute time end")
+
+						muted.status = "unmute"
+						await muted.save()
+
+						if mute_response:
+							embed = disnake.Embed(
+								color=GREEN,
+								title=await get_lang(guild, 'UNMUTE_TITLE'),
+								description=(await get_lang(guild, 'UNMUTE_TEXT')).format(user.name),
+								)
+							embed.set_author(name=f"{user.name}", icon_url=user.avatar) 
+							embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
+							embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(self.bot.user))
+							embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format("mute time end"), inline=False)
+							await mute_response.send(embed=embed)
+				else:
+					if await getDuration(muted.end_date) < 0 :
+						muted.status = "unmute"
+						await muted.save()
+
+		
+	@commands.slash_command(name = "mute", description="mute a user")
+	async def set_language(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User,
+		reason: str = Param("no reason", desc="The optional argument"),
+		hours: int = Param(0, desc="The optional argument"),
+		minutes: int = Param(0, desc="The optional argument"),
+		seconds: int = Param(0, desc="The optional argument"),
+	):
+		duration = (hours * 60 * 60) + (minutes * 60) + seconds
+
+		if not duration:
+			duration = 525600 * 60 * 10
+
+		status = await mute(inter.guild, inter.author, user, duration, reason)
+
+		if status == "muted":
+			embed = disnake.Embed(
+				color=GREEN,
+				description=(await get_lang(inter.guild, 'MUTE_SUCCESSFULLY')).format(user.name)
+			)
+		elif status == "already_muted":
+			embed = disnake.Embed(
+				colour=RED,
+				description=(await get_lang(inter.guild, 'MUTE_ALREADY_MUTED')).format(user.name)
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)		
+
+		if embed:
+			await inter.response.send_message(embed=embed)
+
+
+async def mute(guild, author, user, duration, reason):
+	server = await Guilds.get(guild_id=guild.id)
+	role = disnake.utils.get(guild.roles, id=server.mute_role)
+	mute_response = await getResponseChannel(guild, "mute")
+
+	if not role:
+		perms = disnake.Permissions(send_messages=False, speak=False)
+		role = await guild.create_role(name="muted", permissions=perms)
+		server.mute_role = role.id
+		await server.save()
+
+	try:
+		already_muted = await Mutes.get(guild_id=guild.id, user_id=user.id, status="muted")
+	except:
+		already_muted = False	
+	
+	if already_muted or role in user.roles:
+		return "already_muted"
+
+	await Mutes.create(
+		guild_id = guild.id,
+		user_id = user.id,
+		author = author.id,
+		reason = reason,			
+		date = await getNowUTCDate(),
+		end_date= await getEndUTCDate(duration),
+		status = "muted",
+		)
+
+	await user.add_roles(role, reason=reason)
+
+	if mute_response:
+		embed = disnake.Embed(
+			description=(await get_lang(guild, 'MUTE_SUCCESSFULLY')).format(user.name),
+			)
+		embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
+		embed.add_field(name=await get_lang(guild, 'GENERAL_DURATION'), value=f"{await convertTimeZone(guild, await getEndUTCDate(duration))}")
+		await mute_response.send(embed=embed)
+
+	return "muted"
+
+
+def setup(bot):
+	bot.add_cog(Mute(bot))

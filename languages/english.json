@@ -1,3 +1,14 @@
 {
+	"MUTE_SUCCESSFULLY": "User {0} has been muted!",
+	"MUTE_ALREADY_MUTED": "{0} has already been muted!",
 
+	"UNMUTE_TITLE": "User unmuted!",
+	"UNMUTE_TEXT": "{0} was successfully unmuted!",
+
+	"GENERAL_USER": "User",
+	"GENERAL_MODERATOR": "Moderator",
+	"GENERAL_REASON": "Reason",
+	"GENERAL_DURATION": "Duration",
+
+	"UNKNOWN_ERROR": "Unknown error. Please contact support!"
 }

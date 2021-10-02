@@ -1,3 +1,14 @@
 {
+	"MUTE_SUCCESSFULLY": "Benutzer {0} wurde Stumm geschalten!",
+	"MUTE_ALREADY_MUTED": "{0} ist bereits Stumm geschalten!",
 
+	"UNMUTE_TITLE": "Benutzer freigegeben",
+	"UNMUTE_TEXT": "{0} wurde erfolgreich freigegeben!",
+
+	"GENERAL_USER": "Benutzer",
+	"GENERAL_MODERATOR": "Moderator",
+	"GENERAL_REASON": "Grund",
+	"GENERAL_DURATION": "Dauer",
+
+	"UNKNOWN_ERROR": "Unbekannter Fehler. Bitte kontaktieren Sie den Support!"
 }
