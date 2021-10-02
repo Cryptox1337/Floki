@@ -37,6 +37,8 @@ class Floki(commands.Bot):
 	async def on_ready(self):
 		for guild in self.guilds:
 			server, created = await Guilds.get_or_create(guild_id=guild.id)
+			for user in guild.members:
+				server, created = await Users.get_or_create(guild_id=guild.id, user_id=user.id)
 
 		print(f'Logged on as {self.user} (ID: {self.user.id})')
 

@@ -10,6 +10,11 @@ class Guilds(Model):
 	updated = fields.DatetimeField(auto_now_add=True)
 	mute_role = fields.BigIntField(null=False, default=0)
 
+class Users(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	user_id = fields.BigIntField(null=False)
+
 
 class Response_Channels(Model):
 	id = fields.IntField(pk=True)
