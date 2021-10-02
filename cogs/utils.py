@@ -7,10 +7,54 @@ from models import *
 
 import json
 import os
+from datetime import datetime
+import pytz
 
 class Utils(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
+
+async def getNowUTCDate():
+	date = datetime.fromtimestamp(int(datetime.utcnow().timestamp()))
+
+	return date
+
+
+async def getEndUTCDate(duration):
+	end_date = datetime.fromtimestamp(int(datetime.utcnow().timestamp()) + int(duration))
+
+	return end_date
+
+
+async def getDuration(end_date):
+	now_stamp = int(datetime.utcnow().timestamp())
+	end_stamp = int(datetime.strptime(str(end_date), "%Y-%m-%d %H:%M:%S%z").strftime("%s"))
+	duration = end_stamp - now_stamp
+
+	return duration
+
+
+async def convertTimeZone(guild, time):
+	server = await Guilds.get(guild_id=guild.id)
+	if server:
+		new_timezone = pytz.timezone(server.timezone)
+		new_time = time.astimezone(new_timezone)
+
+	return new_time
+
+
+async def getResponseChannel(guild, response_type):
+	response_channel = None
+	response = await Response_Channels.filter(guild_id=guild.id, response_type=response_type).first()
+	if response:
+		if response.status == "enable":
+			try:
+				response_channel = guild.get_channel(response.channel_id)
+			except:
+				pass
+
+	return response_channel
+
 
 response_string = {}
 for i in os.listdir('./languages'):
