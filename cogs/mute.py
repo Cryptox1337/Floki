@@ -165,7 +165,7 @@ async def mute(guild, author, user, duration, reason):
 
 	if mute_response:
 		embed = disnake.Embed(
-			description=(await get_lang(guild, 'MUTE_SUCCESSFULLY')).format(user.name),
+			description=(await get_lang(guild, 'MUTED')).format(user.name),
 			)
 		if user.avatar:
 			embed.set_author(name=f"{user.name}", icon_url=user.avatar)

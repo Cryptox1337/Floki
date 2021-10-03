@@ -1,4 +1,5 @@
 {
+	"MUTED": "User muted!",
 	"MUTE_SUCCESSFULLY": "User {0} has been muted!",
 	"MUTE_ALREADY_MUTED": "{0} has already been muted!",
 

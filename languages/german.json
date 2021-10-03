@@ -1,4 +1,6 @@
 {
+	
+	"MUTED": "Benutzer gestummt!",
 	"MUTE_SUCCESSFULLY": "Benutzer {0} wurde Stumm geschalten!",
 	"MUTE_ALREADY_MUTED": "{0} ist bereits Stumm geschalten!",
 
