@@ -123,7 +123,6 @@ class Ban(commands.Cog):
 
 
 async def ban(guild, author, user, duration, reason):
-	server = await Guilds.get(guild_id=guild.id)
 	ban_response = await getResponseChannel(guild, "ban")
 
 	try:
@@ -163,7 +162,6 @@ async def ban(guild, author, user, duration, reason):
 	return "banned"
 
 async def unban(guild, author, user, reason):
-	server = await Guilds.get(guild_id=guild.id)
 	ban_response = await getResponseChannel(guild, "ban")
 
 	try:
