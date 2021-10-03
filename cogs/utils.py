@@ -14,11 +14,9 @@ class Utils(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-async def getIsUserBanned(guild, user_id):
-	banned_users = await guild.bans()
-	for ban_entry in banned_users:
-		user_object = ban_entry.user
-		if user_object.id == user_id:
+async def getIsUserBanned(guild, check_user):
+	for ban_entry in await guild.bans():
+		if ban_entry.user.id == check_user.id:
 			return True
 
 	return False

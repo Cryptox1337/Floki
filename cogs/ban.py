@@ -23,10 +23,10 @@ class Ban(commands.Cog):
 				user = await self.bot.fetch_user(ban.user_id)
 
 				if await getDuration(ban.end_date) > 0 :
-					if not await getIsUserBanned(guild, ban.user_id):
+					if not await getIsUserBanned(guild, user):
 						await guild.ban(user, reason=ban.reason)
 				else:
-					if await getIsUserBanned(guild, ban.user_id):
+					if await getIsUserBanned(guild, user):
 						await guild.unban(user, reason="ban time end")
 
 					ban.status = "unbanned"
@@ -169,7 +169,7 @@ async def unban(guild, author, user, reason):
 	except:
 		banned = False
 	
-	if not banned or not await getIsUserBanned(guild, user.id):
+	if not banned or not await getIsUserBanned(guild, user):
 		return "not_banned"
 
 	banned.status = "unbanned"
