@@ -75,11 +75,6 @@ class Ban(commands.Cog):
 				colour=RED,
 				description=(await get_lang(inter.guild, 'ALREADY_BANNED')).format(user.name)
 			)
-		elif status == "user_not_exist":
-			embed = disnake.Embed(
-				colour=RED,
-				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
-			)
 		else:
 			embed = disnake.Embed(
 				colour=RED,
@@ -107,11 +102,6 @@ class Ban(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'NOT_BANNED')).format(user.name)
-			)
-		elif status == "user_not_exist":
-			embed = disnake.Embed(
-				colour=RED,
-				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
 			)
 		else:
 			embed = disnake.Embed(
