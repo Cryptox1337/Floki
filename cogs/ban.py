@@ -126,10 +126,6 @@ async def ban(guild, author, user, duration, reason):
 	server = await Guilds.get(guild_id=guild.id)
 	ban_response = await getResponseChannel(guild, "ban")
 
-	exist = guild.get_member(user.id)
-
-	if not exist:
-		return "user_not_exist"
 	try:
 		already_banned = await Bans.get(guild_id=guild.id, user_id=user.id, status="banned")
 	except:
