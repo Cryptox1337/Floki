@@ -2,8 +2,9 @@
 	"MUTE_SUCCESSFULLY": "Benutzer {0} wurde Stumm geschalten!",
 	"MUTE_ALREADY_MUTED": "{0} ist bereits Stumm geschalten!",
 
-	"UNMUTE_TITLE": "Benutzer freigegeben",
-	"UNMUTE_TEXT": "{0} wurde erfolgreich freigegeben!",
+	"UNMUTED": "Benutzer freigegeben",
+	"UNMUTE_SUCCESSFULLY": "{0} wurde erfolgreich freigegeben!",
+	"UNMUTE_NOT_MUTED": "{0} ist nicht gemuted!",
 
 	"KICK_TITLE": "Benutzer gekickt!",
 	"KICK_TEXT": "{0} wurde erfolgreich gekickt!",

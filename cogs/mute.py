@@ -42,8 +42,7 @@ class Mute(commands.Cog):
 						if mute_response:
 							embed = disnake.Embed(
 								color=GREEN,
-								title=await get_lang(guild, 'UNMUTE_TITLE'),
-								description=(await get_lang(guild, 'UNMUTE_TEXT')).format(user.name),
+								title=await get_lang(guild, 'UNMUTED'),
 								)
 							if user.avatar:
 								embed.set_author(name=f"{user.name}", icon_url=user.avatar)
@@ -90,6 +89,34 @@ class Mute(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)		
+
+		await inter.response.send_message(embed=embed)
+
+	@commands.slash_command(name = "unmute", description="unmute a user")
+	async def unmute(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User,
+		reason: str = Param("no reason", desc="reason for the unmute"),
+	):
+
+		status = await unmute(inter.guild, inter.author, user, reason)
+
+		if status == "unmuted":
+			embed = disnake.Embed(
+				color=GREEN,
+				description=(await get_lang(inter.guild, 'UNMUTE_SUCCESSFULLY')).format(user.name)
+			)
+		elif status == "not_muted":
+			embed = disnake.Embed(
+				colour=RED,
+				description=(await get_lang(inter.guild, 'UNMUTE_NOT_MUTED')).format(user.name)
 			)
 		else:
 			embed = disnake.Embed(
@@ -151,6 +178,53 @@ async def mute(guild, author, user, duration, reason):
 		await mute_response.send(embed=embed)
 
 	return "muted"
+
+async def unmute(guild, author, user, reason):
+	server = await Guilds.get(guild_id=guild.id)
+	role = disnake.utils.get(guild.roles, id=server.mute_role)
+	mute_response = await getResponseChannel(guild, "mute")
+
+	exist = guild.get_member(user.id)
+
+	if not role:
+		perms = disnake.Permissions(send_messages=False, speak=False)
+		role = await guild.create_role(name="muted", permissions=perms)
+		server.mute_role = role.id
+		await server.save()
+
+	try:
+		muted = await Mutes.get(guild_id=guild.id, user_id=user.id, status="muted")
+	except:
+		muted = False	
+	
+	if exist:
+		if not muted or not role in user.roles:
+			return "not_muted"
+	else:
+		if not muted:
+			return "not_muted"		
+
+	if exist:
+		await user.remove_roles(role, reason=reason)
+
+	muted.status = "unmuted"
+	muted.end_date = await getNowUTCDate()
+	await muted.save()
+
+	if mute_response:
+		embed = disnake.Embed(
+			description=(await get_lang(guild, 'UNMUTED')).format(user.name),
+			)
+		if user.avatar:
+			embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		else:
+			embed.set_author(name=f"{user.name}")
+		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
+		await mute_response.send(embed=embed)
+
+	return "unmuted"
 
 
 def setup(bot):

@@ -2,8 +2,9 @@
 	"MUTE_SUCCESSFULLY": "User {0} has been muted!",
 	"MUTE_ALREADY_MUTED": "{0} has already been muted!",
 
-	"UNMUTE_TITLE": "User unmuted!",
-	"UNMUTE_TEXT": "{0} was successfully unmuted!",
+	"UNMUTED": "User unmuted!",
+	"UNMUTE_SUCCESSFULLY": "{0} was successfully unmuted!",
+	"UNMUTE_NOT_MUTED": "{0} is not muted!",
 
 	"KICK_TITLE": "User kicked!",
 	"KICK_TEXT": "{0} was successfully kicked!",
