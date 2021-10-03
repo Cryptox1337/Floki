@@ -15,6 +15,10 @@
 	"BAN_TEXT": "User {0} has been banned",
 	"ALREADY_BANNED": "This User is already banned",
 
+	"UNBAN_TITLE": "User Unbanned!",
+	"UNBAN_TEXT": "{0} is now unbanned!",
+	"NOT_BANNED": "This User is not banned",
+
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Reason",

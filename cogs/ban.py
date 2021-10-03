@@ -85,6 +85,39 @@ class Ban(commands.Cog):
 
 		await inter.response.send_message(embed=embed)
 
+	@commands.slash_command(name = "unban", description="unban a user")
+	async def unban(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User,
+		reason: str = Param("no reason", desc="reason for the unban"),
+	):
+
+		status = await unban(inter.guild, inter.author, user, reason)
+
+		if status == "unbaned":
+			embed = disnake.Embed(
+				color=GREEN,
+				description=(await get_lang(inter.guild, 'UNBAN_TEXT')).format(user.name)
+			)
+		elif status == "not_banned":
+			embed = disnake.Embed(
+				colour=RED,
+				description=(await get_lang(inter.guild, 'NOT_BANNED')).format(user.name)
+			)
+		elif status == "user_not_exist":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)		
+
+		await inter.response.send_message(embed=embed)		
+
 
 async def ban(guild, author, user, duration, reason):
 	server = await Guilds.get(guild_id=guild.id)
@@ -126,6 +159,36 @@ async def ban(guild, author, user, duration, reason):
 		await ban_response.send(embed=embed)
 
 	return "banned"
+
+async def unban(guild, author, user, reason):
+	server = await Guilds.get(guild_id=guild.id)
+	ban_response = await getResponseChannel(guild, "ban")
+
+	try:
+		banned = await Bans.get(guild_id=guild.id, user_id=user.id, status="banned")
+	except:
+		banned = False
+	
+	if not banned or not await getIsUserBanned(guild, user.id):
+		return "not_banned"
+
+	banned.status = "unbanned"
+	banned.end_date = await getNowUTCDate()
+	await banned.save()
+
+	await guild.unban(user, reason=reason)
+
+	if ban_response:
+		embed = disnake.Embed(
+			description=(await get_lang(guild, 'UNBAN_TITLE')).format(user.name),
+			)
+		embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
+		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
+		await ban_response.send(embed=embed)
+
+	return "unbaned"
 
 
 def setup(bot):

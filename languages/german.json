@@ -15,6 +15,10 @@
 	"BAN_TEXT": "Benutzer {0} wurde erfolgreich gebannt!",
 	"ALREADY_BANNED": "Dieser Benutzer ist bereits gebannt",
 
+	"UNBAN_TITLE": "Benutzer entbannt!",
+	"UNBAN_TEXT": "{0} ist jetzt entbannt!",
+	"NOT_BANNED": "Dieser Benutzer ist nicht gebannt",
+
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Grund",
