@@ -44,6 +44,7 @@ class Ban(commands.Cog):
 						embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 						embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(self.bot.user))
 						embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format("ban time end"), inline=False)
+						embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 						await ban_response.send(embed=embed)
 
 
@@ -147,6 +148,7 @@ async def ban(guild, author, user, duration, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
 		embed.add_field(name=await get_lang(guild, 'GENERAL_DURATION'), value=f"{await convertTimeZone(guild, await getEndUTCDate(duration))}")
+		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await ban_response.send(embed=embed)
 
 	return "banned"
@@ -179,6 +181,7 @@ async def unban(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
+		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await ban_response.send(embed=embed)
 
 	return "unbaned"
