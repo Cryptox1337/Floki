@@ -22,6 +22,10 @@
 	"UNBAN_TEXT": "{0} ist jetzt entbannt!",
 	"NOT_BANNED": "Dieser Benutzer ist nicht gebannt",
 
+	"TEMPORARY_CREATED": "Temporary-Voice erfolgreich erstellt!",
+	"TEMPORARY_INCORRECT_LIMIT": "limit: {0} ist nicht Korrekt wähle zwischen 0 - 100!",
+	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} ist nicht Korrekt wähle zwischen 8 - 96!",
+
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Grund",

@@ -59,3 +59,19 @@ class Bans(Model):
 	date = fields.DatetimeField(null=False)
 	end_date = fields.DatetimeField(null=False)
 	status = fields.CharField(null=False, max_length=255, default="banned")
+
+class Temporary_Voice_Config(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	channel_id = fields.BigIntField(null=False)
+	category_id = fields.BigIntField(null=False)
+	limit = fields.BigIntField(null=False, default=0)
+	bitrate = fields.BigIntField(null=False, default=64)
+	status = fields.CharField(null=False, max_length=255, default="disabled")
+
+class Temporary_Voice_Channels(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	owner_id = fields.BigIntField(null=False)
+	channel_id = fields.BigIntField(null=False)
+	config_id = fields.BigIntField(null=False)	
