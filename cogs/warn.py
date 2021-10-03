@@ -63,7 +63,10 @@ async def warn(guild, author, user, reason):
 			color=GREEN,
 			description=(await get_lang(guild, 'WARN_TITLE')).format(user.name),
 			)
-		embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		if user.avatar:
+			embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		else:
+			embed.set_author(name=f"{user.name}")
 		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)

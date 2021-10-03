@@ -45,7 +45,10 @@ class Mute(commands.Cog):
 								title=await get_lang(guild, 'UNMUTE_TITLE'),
 								description=(await get_lang(guild, 'UNMUTE_TEXT')).format(user.name),
 								)
-							embed.set_author(name=f"{user.name}", icon_url=user.avatar) 
+							if user.avatar:
+								embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+							else:
+								embed.set_author(name=f"{user.name}")
 							embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 							embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(self.bot.user))
 							embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format("mute time end"), inline=False)
@@ -137,7 +140,10 @@ async def mute(guild, author, user, duration, reason):
 		embed = disnake.Embed(
 			description=(await get_lang(guild, 'MUTE_SUCCESSFULLY')).format(user.name),
 			)
-		embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		if user.avatar:
+			embed.set_author(name=f"{user.name}", icon_url=user.avatar)
+		else:
+			embed.set_author(name=f"{user.name}")
 		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
