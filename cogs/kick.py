@@ -68,6 +68,7 @@ async def kick(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_USER'), value="{0}".format(user))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_MODERATOR'), value="{0}".format(author))
 		embed.add_field(name=await get_lang(guild, 'GENERAL_REASON'), value="{0}".format(reason), inline=False)
+		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Kicks.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await kick_response.send(embed=embed)
 
 	return "user_kicked"

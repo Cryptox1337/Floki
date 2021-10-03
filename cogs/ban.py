@@ -160,7 +160,7 @@ async def unban(guild, author, user, reason):
 		banned = await Bans.get(guild_id=guild.id, user_id=user.id, status="banned")
 	except:
 		banned = False
-	
+
 	if not banned or not await getIsUserBanned(guild, user):
 		return "not_banned"
 
