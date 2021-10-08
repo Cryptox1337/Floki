@@ -7,10 +7,6 @@ load_dotenv(dotenv_path)
 
 TOKEN = os.environ.get("TOKEN")
 
-SPOTIFY_ID = os.environ.get("SPOTIFY_ID")
-SPOTIFY_SECRET = os.environ.get("SPOTIFY_SECRET")
-COOKIE_PATH = os.environ.get("COOKIE_PATH")
-
 DB_URL = (
     f"mysql://{os.environ.get('DB_USER')}"
     f":{os.environ.get('DB_PASSWORD')}"
