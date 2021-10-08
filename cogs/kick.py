@@ -5,7 +5,6 @@ from disnake.ext.commands import Param
 from models import *
 from colors import *
 from cogs.utils import *
-import asyncio
 
 class Kick(commands.Cog):
 	def __init__(self, bot):

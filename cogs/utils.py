@@ -2,7 +2,6 @@
 import disnake
 from disnake.ext import commands
 from disnake.ext.commands import Param
-import asyncio
 from models import *
 
 import json

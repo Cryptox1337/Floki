@@ -1,6 +1,3 @@
-import aiohttp
-import traceback
-
 from disnake.ext import commands, tasks
 import disnake
 import os
