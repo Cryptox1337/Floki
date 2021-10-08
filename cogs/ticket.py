@@ -2,9 +2,9 @@
 import disnake
 from disnake.ext import commands
 from disnake.ext.commands import Param
-import models
-import colors
-import cogs.utils as utils
+from models import *
+from colors import *
+from cogs.utils import *
 import asyncio
 
 class Ticket(commands.Cog):
@@ -23,13 +23,13 @@ class Ticket(commands.Cog):
 
 		if status == "ticket_setup":
 			embed = disnake.Embed(
-				color=colors.GREEN,
-				description=await utils.get_lang(inter.guild, 'TICKET_SUCCESSFULLY')
+				color=GREEN,
+				description=await get_lang(inter.guild, 'TICKET_SUCCESSFULLY')
 			)
 		else:
 			embed = disnake.Embed(
-				colour=colors.RED,
-				description=await utils.get_lang(inter.guild, 'UNKNOWN_ERROR')
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
 		await inter.response.send_message(embed=embed)
@@ -57,13 +57,13 @@ class Ticket(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_guild_channel_delete(self, channel):
-		configs = await models.Ticket_Config.filter(guild_id=channel.guild.id, status="enabled")
+		configs = await Ticket_Config.filter(guild_id=channel.guild.id, status="enabled")
 
 		if configs:
 			for config in configs:
-				ticket = await models.Tickets.filter(guild_id=channel.guild.id, config_id=config.id, ticket_channel=channel.id).first()
+				ticket = await Tickets.filter(guild_id=channel.guild.id, config_id=config.id, ticket_channel=channel.id).first()
 				if config.channel_id == channel.id or config.category_id == channel.id:
-					tickets = await models.Tickets.filter(guild_id=channel.guild.id, config_id=config.id)
+					tickets = await Tickets.filter(guild_id=channel.guild.id, config_id=config.id)
 					ticket_channel = channel.guild.get_channel(config.channel_id)
 					ticket_category = channel.guild.get_channel(config.category_id)
 
@@ -109,11 +109,11 @@ class Ticket(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message_delete(self, message):
-		configs = await models.Ticket_Config.filter(guild_id=message.guild.id, status="enabled")
+		configs = await Ticket_Config.filter(guild_id=message.guild.id, status="enabled")
 
 		if configs:
 			for config in configs:
-				ticket = await models.Tickets.filter(guild_id=message.guild.id, config_id=config.id, message_id=message.id).first()
+				ticket = await Tickets.filter(guild_id=message.guild.id, config_id=config.id, message_id=message.id).first()
 
 				if config.message_id == message.id:
 					ticket_channel = message.guild.get_channel(config.channel_id)
@@ -127,7 +127,7 @@ class Ticket(commands.Cog):
 						ticket_channel = await message.guild.create_text_channel(name="ticket_channel", category=ticket_category)
 						config.channel_id = ticket_channel.id
 
-					embed = disnake.Embed(description = await utils.get_lang(message.guild, 'TICKET_CREATE_EMBED'))
+					embed = disnake.Embed(description = await get_lang(message.guild, 'TICKET_CREATE_EMBED'))
 					view = disnake.ui.View()
 
 					buttons = [
@@ -172,10 +172,10 @@ class Ticket(commands.Cog):
 	@commands.Cog.listener()
 	async def on_ready(self):
 		for guild in self.bot.guilds:
-			configs = await models.Ticket_Config.filter(guild_id=guild.id, status="enabled")
+			configs = await Ticket_Config.filter(guild_id=guild.id, status="enabled")
 
 			for config in configs:
-				tickets = await models.Tickets.filter(guild_id=guild.id, config_id=config.id, status__in=['Open', 'Pending', 'Locked'])
+				tickets = await Tickets.filter(guild_id=guild.id, config_id=config.id, status__in=['Open', 'Pending', 'Locked'])
 
 				ticket_channel = guild.get_channel(config.channel_id)
 				ticket_category = guild.get_channel(config.category_id)
@@ -194,7 +194,7 @@ class Ticket(commands.Cog):
 					await ticket_channel.edit(category=ticket_category, position=0)
 
 				if not message:
-					embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_CREATE_EMBED'))
+					embed = disnake.Embed(description = await get_lang(guild, 'TICKET_CREATE_EMBED'))
 					view = disnake.ui.View()
 
 					buttons = [
@@ -258,7 +258,7 @@ async def setup_ticket_config(guild, channel, category):
 	else:
 		return
 
-	embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_CREATE_EMBED'))
+	embed = disnake.Embed(description = await get_lang(guild, 'TICKET_CREATE_EMBED'))
 
 	view = disnake.ui.View()
 	buttons = [
@@ -270,7 +270,7 @@ async def setup_ticket_config(guild, channel, category):
 	
 	message = await channel.send(embed=embed, view=view)
 
-	await models.Ticket_Config.create(
+	await Ticket_Config.create(
 		guild_id = guild.id,
 		channel_id = channel.id,	
 		category_id = category.id,
@@ -281,7 +281,7 @@ async def setup_ticket_config(guild, channel, category):
 	return "ticket_setup"
 
 async def on_butoon_create_ticket(inter):
-	ticket_configs = await models.Ticket_Config.filter(guild_id=inter.guild.id, status="enabled")
+	ticket_configs = await Ticket_Config.filter(guild_id=inter.guild.id, status="enabled")
 	if ticket_configs:
 		for config in ticket_configs:
 			if config.message_id == inter.message.id:
@@ -297,7 +297,7 @@ async def create_new_ticket(guild, user, config):
 		user: disnake.PermissionOverwrite(read_messages=True),
 	}
 
-	category = disnake.utils.get(guild.categories, id=config.category_id)
+	category = disnake.get(guild.categories, id=config.category_id)
 
 	if not category:
 		category = await guild.create_category(name="ticket_category")
@@ -307,13 +307,13 @@ async def create_new_ticket(guild, user, config):
 	channel = await guild.create_text_channel("user-ticket", overwrites=overwrites, category=category)
 
 	view = disnake.ui.View()
-	buttons = disnake.ui.Button(style=disnake.ButtonStyle.green, label= await utils.get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")
+	buttons = disnake.ui.Button(style=disnake.ButtonStyle.green, label= await get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")
 	view.add_item(buttons)
 
-	embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_OPEN_EMBED'))
+	embed = disnake.Embed(description = await get_lang(guild, 'TICKET_OPEN_EMBED'))
 	msg = await channel.send(embed=embed, view=view)
 
-	await models.Tickets.create(
+	await Tickets.create(
 		guild_id = guild.id,
 		user_id = user.id,
 		config_id = config.id,
@@ -325,7 +325,7 @@ async def create_new_ticket(guild, user, config):
 
 async def on_butoon_ticket(inter, custom_id):
 	closed = False
-	ticket = await models.Tickets.filter(guild_id=inter.guild.id, ticket_channel=inter.channel.id).first()
+	ticket = await Tickets.filter(guild_id=inter.guild.id, ticket_channel=inter.channel.id).first()
 	
 	if not ticket:
 		return
@@ -371,7 +371,7 @@ async def on_butoon_ticket(inter, custom_id):
 
 async def get_ticket_message(guild, name):
 	if name == "Create":
-		embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_CREATE_EMBED'))
+		embed = disnake.Embed(description = await get_lang(guild, 'TICKET_CREATE_EMBED'))
 		view = disnake.ui.View()
 		buttons = [
 			disnake.ui.Button(style=disnake.ButtonStyle.green, label='ticket', custom_id="ticket_create")
@@ -379,30 +379,30 @@ async def get_ticket_message(guild, name):
 
 
 	elif name == "Open":
-		embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_OPEN_EMBED'))
+		embed = disnake.Embed(description = await get_lang(guild, 'TICKET_OPEN_EMBED'))
 		view = disnake.ui.View()
 		buttons = [
-			disnake.ui.Button(style=disnake.ButtonStyle.green, label = await utils.get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")
+			disnake.ui.Button(style=disnake.ButtonStyle.green, label = await get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")
 		]
 
 	elif name == "Pending":
-		embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_PENDING_EMBED'))
+		embed = disnake.Embed(description = await get_lang(guild, 'TICKET_PENDING_EMBED'))
 		view = disnake.ui.View()
 		buttons = [
-					disnake.ui.Button(style=disnake.ButtonStyle.green, label = await utils.get_lang(guild, 'GENERAL_YES'), custom_id="ticket_yes"), 
-					disnake.ui.Button(style=disnake.ButtonStyle.red, label = await utils.get_lang(guild, 'GENERAL_NO'), custom_id="ticket_no")
+					disnake.ui.Button(style=disnake.ButtonStyle.green, label = await get_lang(guild, 'GENERAL_YES'), custom_id="ticket_yes"), 
+					disnake.ui.Button(style=disnake.ButtonStyle.red, label = await get_lang(guild, 'GENERAL_NO'), custom_id="ticket_no")
 				]
 
 	elif name == "Locked":
-		embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_LOCKED_EMBED'))
+		embed = disnake.Embed(description = await get_lang(guild, 'TICKET_LOCKED_EMBED'))
 		view = disnake.ui.View()
 		buttons = [
-					disnake.ui.Button(style=disnake.ButtonStyle.green, label = await utils.get_lang(guild, 'GENERAL_REOPEN'), custom_id="ticket_reopen"),
-					disnake.ui.Button(style=disnake.ButtonStyle.red, label = await utils.get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_close")
+					disnake.ui.Button(style=disnake.ButtonStyle.green, label = await get_lang(guild, 'GENERAL_REOPEN'), custom_id="ticket_reopen"),
+					disnake.ui.Button(style=disnake.ButtonStyle.red, label = await get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_close")
 				]
 
 	elif name == "Closed":
-		embed = disnake.Embed(description = await utils.get_lang(guild, 'TICKET_CLOSED_EMBED'))
+		embed = disnake.Embed(description = await get_lang(guild, 'TICKET_CLOSED_EMBED'))
 		view = None
 		buttons = None
 
