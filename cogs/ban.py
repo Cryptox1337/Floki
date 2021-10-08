@@ -14,7 +14,6 @@ class Ban(commands.Cog):
 	@tasks.loop(minutes=0.1)
 	async def ban_loop(self):
 		for guild in self.bot.guilds:
-			server = await Guilds.get(guild_id=guild.id)
 			ban_response = await getResponseChannel(guild, "ban")
 			ban_list = await Bans.filter(guild_id=guild.id, status="banned")
 			
