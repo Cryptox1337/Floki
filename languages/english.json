@@ -25,11 +25,26 @@
 	"TEMPORARY_INCORRECT_LIMIT": "limit: {0} is not correct choose between 0 - 100!",
 	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} is not correct choose between 8 - 96!",
 
+	"TICKET_SUCCESSFULLY": "Ticket was created successfully",
+	"TICKET_CREATE_EMBED": "Create a Ticket",
+	"TICKET_OPEN_EMBED": "If you want to close the ticket, press the button",
+	"TICKET_PENDING_EMBED": "Are you sure you want to close the ticket?",
+	"TICKET_LOCKED_EMBED": "The ticket is now locked do you want to delete it permanently?",
+	"TICKET_CLOSED_EMBED": "This ticket was finally closed and will be deleted in a few seconds...",
+
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Reason",
 	"GENERAL_DURATION": "Duration",
 	"GENERAL_COUNT": "Count",
+	"GENERAL_CLOSE": "Close",
+	"GENERAL_CANCEL": "Cancel",
+	"GENERAL_REOPEN": "Reopen",
+
+
+	"GENERAL_YES": "Yes",
+	"GENERAL_NO": "No",
+
 
 	"USER_NOT_EXIST": "This user does not exist on this server!",
 	"UNKNOWN_ERROR": "Unknown error. Please contact support!"

@@ -75,3 +75,20 @@ class Temporary_Voice_Channels(Model):
 	owner_id = fields.BigIntField(null=False)
 	channel_id = fields.BigIntField(null=False)
 	config_id = fields.BigIntField(null=False)	
+
+class Ticket_Config(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	channel_id = fields.BigIntField(null=False)
+	category_id = fields.BigIntField(null=False)
+	message_id = fields.BigIntField(null=False, default=0)
+	status = fields.CharField(null=False, max_length=255, default="disabled")
+
+class Tickets(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	user_id = fields.BigIntField(null=False)
+	config_id = fields.BigIntField(null=False)	
+	ticket_channel = fields.BigIntField(null=False)
+	message_id = fields.BigIntField(null=False)
+	status = fields.CharField(null=False, max_length=255, default="Open")
