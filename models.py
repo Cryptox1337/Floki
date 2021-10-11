@@ -21,6 +21,11 @@ class Channels(Model):
 	guild_id = fields.BigIntField(null=False)
 	channel_id = fields.BigIntField(null=False)
 
+class Roles(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	role_id = fields.BigIntField(null=False)
+
 class Response_Channels(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)

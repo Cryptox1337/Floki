@@ -38,8 +38,11 @@ class Floki(commands.Bot):
 				server, created = await Users.get_or_create(guild_id=guild.id, user_id=user.id)
 
 			for channel in guild.channels:
-				await Channels.get_or_create(guild_id=guild.id, channel_id=channel.id)	
+				await Channels.get_or_create(guild_id=guild.id, channel_id=channel.id)
 
+			for role in guild.roles:
+				if not role.managed and not role.name == "@everyone":
+					await Roles.get_or_create(guild_id=guild.id, role_id=role.id)
 
 		print(f'Logged on as {self.user} (ID: {self.user.id})')
 
