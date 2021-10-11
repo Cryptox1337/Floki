@@ -75,17 +75,17 @@ class Mute(commands.Cog):
 
 		status = await mute(inter.guild, inter.author, user, duration, reason)
 
-		if status == "muted":
+		if status == "MUTE_SUCCESSFULLY":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=(await get_lang(inter.guild, 'MUTE_SUCCESSFULLY')).format(user.name)
 			)
-		elif status == "already_muted":
+		elif status == "MUTE_ALREADY_MUTED":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'MUTE_ALREADY_MUTED')).format(user.name)
 			)
-		elif status == "user_not_exist":
+		elif status == "USER_NOT_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
@@ -108,12 +108,12 @@ class Mute(commands.Cog):
 
 		status = await unmute(inter.guild, inter.author, user, reason)
 
-		if status == "unmuted":
+		if status == "UNMUTE_SUCCESSFULLY":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=(await get_lang(inter.guild, 'UNMUTE_SUCCESSFULLY')).format(user.name)
 			)
-		elif status == "not_muted":
+		elif status == "UNMUTE_NOT_MUTED":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'UNMUTE_NOT_MUTED')).format(user.name)
@@ -135,7 +135,7 @@ async def mute(guild, author, user, duration, reason):
 	exist = guild.get_member(user.id)
 
 	if not exist:
-		return "user_not_exist"
+		return "USER_NOT_EXIST"
 
 	if not role:
 		perms = disnake.Permissions(send_messages=False, speak=False)
@@ -149,7 +149,7 @@ async def mute(guild, author, user, duration, reason):
 		already_muted = False	
 	
 	if already_muted or role in user.roles:
-		return "already_muted"
+		return "MUTE_ALREADY_MUTED"
 
 	await Mutes.create(
 		guild_id = guild.id,
@@ -178,7 +178,7 @@ async def mute(guild, author, user, duration, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Mutes.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await mute_response.send(embed=embed)
 
-	return "muted"
+	return "MUTE_SUCCESSFULLY"
 
 async def unmute(guild, author, user, reason):
 	server = await Guilds.get(guild_id=guild.id)
@@ -200,10 +200,10 @@ async def unmute(guild, author, user, reason):
 	
 	if exist:
 		if not muted or not role in user.roles:
-			return "not_muted"
+			return "UNMUTE_NOT_MUTED"
 	else:
 		if not muted:
-			return "not_muted"		
+			return "UNMUTE_NOT_MUTED"		
 
 	if exist:
 		await user.remove_roles(role, reason=reason)
@@ -226,7 +226,7 @@ async def unmute(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Mutes.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await mute_response.send(embed=embed)
 
-	return "unmuted"
+	return "UNMUTE_SUCCESSFULLY"
 
 
 def setup(bot):
