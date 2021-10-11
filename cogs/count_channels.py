@@ -36,12 +36,12 @@ class Count_Channel(commands.Cog):
 	):
 		status = await create_count_channel(inter.guild, count_name, count_type)
 
-		if status == "count_channel_created":
+		if status == "COUNT_CREATED":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=await get_lang(inter.guild, 'COUNT_CREATED')
 			)
-		elif status == "count_already_exist":
+		elif status == "COUNT_ALREADY_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'COUNT_ALREADY_EXIST')
@@ -69,12 +69,12 @@ class Count_Channel(commands.Cog):
 	):
 		status = await remove_count_channel(inter.guild, count_type)
 
-		if status == "count_channel_removed":
+		if status == "COUNT_REMOVED":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=await get_lang(inter.guild, 'COUNT_REMOVED')
 			)
-		elif status == "count_not_exist":
+		elif status == "COUNT_NOT_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'COUNT_NOT_EXIST')
@@ -109,18 +109,18 @@ class Count_Channel(commands.Cog):
 	):
 		status = await update_count_channel(inter.guild, new_name, count_type, status)
 
-		if status == "count_channel_updated":
+		if status == "COUNT_UPATED":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=await get_lang(inter.guild, 'COUNT_UPATED')
 			)
-		elif status == "nothing_to_change":
+		elif status == "NOTHING_TO_CHANGE":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'NOTHING_TO_CHANGE')
 			)
 
-		elif status == "count_not_exist":
+		elif status == "COUNT_NOT_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'COUNT_NOT_EXIST')
@@ -138,7 +138,7 @@ async def create_count_channel(guild, count_name, count_type):
 	already_exist = await Count_Channels.filter(guild_id=guild.id, count_type=count_type).first()
 
 	if already_exist:
-		return "count_already_exist"
+		return "COUNT_ALREADY_EXIST"
 
 	count = 0
 	if count_type == "user":
@@ -161,14 +161,14 @@ async def create_count_channel(guild, count_name, count_type):
 		status = "enabled"
 	)
 
-	return "count_channel_created"
+	return "COUNT_CREATED"
 
 
 async def remove_count_channel(guild, count_type):
 	count_table = await Count_Channels.filter(guild_id=guild.id, count_type=count_type).first()
 
 	if not count_table:
-		return "count_not_exist"
+		return "COUNT_NOT_EXIST"
 
 	channel = guild.get_channel(count_table.channel_id)
 
@@ -177,17 +177,17 @@ async def remove_count_channel(guild, count_type):
 
 	await count_table.delete()
 
-	return "count_channel_removed"
+	return "COUNT_REMOVED"
 
 
 async def update_count_channel(guild, new_name, count_type, status):
 	count_table = await Count_Channels.filter(guild_id=guild.id, count_type=count_type).first()
 
 	if not count_table:
-		return "count_not_exist"
+		return "COUNT_NOT_EXIST"
 
 	if not new_name and not status:
-		return "nothing_to_change"
+		return "NOTHING_TO_CHANGE"
 
 	if new_name:
 		count_table.count_name = new_name
@@ -199,7 +199,7 @@ async def update_count_channel(guild, new_name, count_type, status):
 		await count_table.save()
 
 
-	return "count_channel_updated"
+	return "COUNT_UPATED"
 
 async def check_count_channel(guild):
 	count_channels = await Count_Channels.filter(guild_id=guild.id, status="enabled")
