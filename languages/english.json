@@ -38,6 +38,10 @@
 	"COUNT_NOT_EXIST": "the count channel does not exists!",
 	"COUNT_UPATED": "the count channel was successfully updated!",
 
+	"AUTO_ROLE_CREATED": "the auto role was created successfully!",
+	"ALREADY_AUTO_ROLE": "the role is already a auto role exists!",
+	"AUTO_ROLE_REMOVED": "the auto role has been successfully removed!",
+	"NOT_AUTO_ROLE": "the role is not a auto role!",
 
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",
