@@ -16,6 +16,11 @@ class Users(Model):
 	user_id = fields.BigIntField(null=False)
 	warns = fields.IntField(null=False, default=0)
 
+class Channels(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	channel_id = fields.BigIntField(null=False)
+
 class Response_Channels(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
