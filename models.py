@@ -117,3 +117,11 @@ class Embeds(Model):
 	footer = fields.TextField(null=True, max_length=255)
 	footer_icon = fields.CharField(null=True, max_length=255)
 	status = fields.CharField(null=True, max_length=255, default="disabled")
+
+class Count_Channels(Model):
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	count_name = fields.CharField(null=False, max_length=255)
+	count_type = fields.CharField(null=False, max_length=255)
+	channel_id = fields.BigIntField(null=False)
+	status = fields.CharField(null=False, max_length=255, default="disabled")

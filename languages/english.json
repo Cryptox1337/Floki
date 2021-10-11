@@ -32,6 +32,13 @@
 	"TICKET_LOCKED_EMBED": "The ticket is now locked do you want to delete it permanently?",
 	"TICKET_CLOSED_EMBED": "This ticket was finally closed and will be deleted in a few seconds...",
 
+	"COUNT_CREATED": "the count channel was created successfully!",
+	"COUNT_ALREADY_EXIST": "the count channel already exists!",
+	"COUNT_REMOVED": "the count channel was successfully removed!",
+	"COUNT_NOT_EXIST": "the count channel does not exists!",
+	"COUNT_UPATED": "the count channel was successfully updated!",
+
+
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Reason",
@@ -47,5 +54,6 @@
 
 
 	"USER_NOT_EXIST": "This user does not exist on this server!",
+	"NOTHING_TO_CHANGE": "There was nothing to be changed!",
 	"UNKNOWN_ERROR": "Unknown error. Please contact support!"
 }
