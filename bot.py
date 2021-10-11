@@ -68,10 +68,10 @@ class Floki(commands.Bot):
 
 	@commands.Cog.listener()
 	async def on_guild_role_delete(self, role):
-		_channel = await Roles.filter(guild_id=role.guild.id, role_id=role.id).first()
+		_role = await Roles.filter(guild_id=role.guild.id, role_id=role.id).first()
 
-		if _channel:
-			await _channel.delete()
+		if _role:
+			await _role.delete()
 
 
 async def check_role_and_channels(guild):
