@@ -21,7 +21,7 @@ class Ticket(commands.Cog):
 
 		status = await setup_ticket_config(inter.guild, channel, category)
 
-		if status == "ticket_setup":
+		if status == "TICKET_SUCCESSFULLY":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=await get_lang(inter.guild, 'TICKET_SUCCESSFULLY')
@@ -278,7 +278,7 @@ async def setup_ticket_config(guild, channel, category):
 		status = "enabled",
 		)
 
-	return "ticket_setup"
+	return "TICKET_SUCCESSFULLY"
 
 async def on_butoon_create_ticket(inter):
 	ticket_configs = await Ticket_Config.filter(guild_id=inter.guild.id, status="enabled")
