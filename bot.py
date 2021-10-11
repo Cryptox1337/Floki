@@ -33,9 +33,9 @@ class Floki(commands.Bot):
 
 	async def on_ready(self):
 		for guild in self.guilds:
-			server, created = await Guilds.get_or_create(guild_id=guild.id)
+			await Guilds.get_or_create(guild_id=guild.id)
 			for user in guild.members:
-				server, created = await Users.get_or_create(guild_id=guild.id, user_id=user.id)
+				await Users.get_or_create(guild_id=guild.id, user_id=user.id)
 
 			for channel in guild.channels:
 				await Channels.get_or_create(guild_id=guild.id, channel_id=channel.id)
