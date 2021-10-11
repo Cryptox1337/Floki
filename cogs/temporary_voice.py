@@ -53,17 +53,17 @@ class Temporary_Voice(commands.Cog):
 	):
 		status = await create_temporary_voice(inter.guild, category, limit, bitrate)
 
-		if status == "temporary_voice_created":
+		if status == "TEMPORARY_CREATED":
 			embed = disnake.Embed(
 				color=GREEN,
 				description=await get_lang(inter.guild, 'TEMPORARY_CREATED')
 			)
-		elif status == "incorrect_limit":
+		elif status == "TEMPORARY_INCORRECT_LIMIT":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'TEMPORARY_INCORRECT_LIMIT')).format(limit)
 			)
-		elif status == "incorrect_bitrate":
+		elif status == "TEMPORARY_INCORRECT_BITRATE":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'TEMPORARY_INCORRECT_BITRATE')).format(bitrate)
@@ -137,10 +137,10 @@ class Temporary_Voice(commands.Cog):
 
 async def create_temporary_voice(guild, category, limit, bitrate):
 	if limit < 0 or limit > 99:
-		return "incorrect_limit"
+		return "TEMPORARY_INCORRECT_LIMIT"
 
 	if bitrate < 8 or bitrate > 96:
-		return "incorrect_bitrate"
+		return "TEMPORARY_INCORRECT_BITRATE"
 
 	if not category:
 		category = await guild.create_category(name="temporary_voice_category")
@@ -159,7 +159,7 @@ async def create_temporary_voice(guild, category, limit, bitrate):
 		status="enabled"
 	)
 
-	return "temporary_voice_created"
+	return "TEMPORARY_CREATED"
 
 def setup(bot):
 	bot.add_cog(Temporary_Voice(bot))
