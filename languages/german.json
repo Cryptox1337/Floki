@@ -12,7 +12,7 @@
 	"KICK_TEXT": "{0} wurde erfolgreich gekickt!",
 
 	"WARN_TITLE": "Benutzer verwarnt!",
-	"WARN_TEXT": "{0} wurde erfolgreich verwarnt!",
+	"USER_WARNED": "{0} wurde erfolgreich verwarnt!",
 
 	"BAN_TITLE": "Benutzer gebannt!",
 	"BAN_TEXT": "Benutzer {0} wurde erfolgreich gebannt!",

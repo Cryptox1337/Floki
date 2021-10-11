@@ -20,12 +20,12 @@ class Warn(commands.Cog):
 
 		status = await warn(inter.guild, inter.author, user, reason)
 
-		if status == "user_warned":
+		if status == "USER_WARNED":
 			embed = disnake.Embed(
 				color=GREEN,
-				description=(await get_lang(inter.guild, 'WARN_TEXT')).format(user.name)
+				description=(await get_lang(inter.guild, 'USER_WARNED')).format(user.name)
 			)
-		elif status == "user_not_exist":
+		elif status == "USER_NOT_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
@@ -44,7 +44,7 @@ async def warn(guild, author, user, reason):
 	user_db = await Users.get(guild_id=guild.id, user_id=user.id)
 
 	if not exist:
-		return "user_not_exist"
+		return "USER_NOT_EXIST"
 
 	user_db.warns += 1
 	await user_db.save()		
@@ -72,7 +72,7 @@ async def warn(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(user_db.warns), inline=False)
 		await warn_response.send(embed=embed)
 
-	return "user_warned"
+	return "USER_WARNED"
 
 def setup(bot):
 	bot.add_cog(Warn(bot))

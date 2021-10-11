@@ -11,7 +11,7 @@
 	"KICK_TEXT": "{0} was successfully kicked!",
 
 	"WARN_TITLE": "User warned!",
-	"WARN_TEXT": "{0} was successfully warned!",
+	"USER_WARNED": "{0} was successfully warned!",
 
 	"BAN_TITLE": "User banned!",
 	"BAN_TEXT": "User {0} has been banned",
