@@ -92,3 +92,18 @@ class Tickets(Model):
 	ticket_channel = fields.BigIntField(null=False)
 	message_id = fields.BigIntField(null=False)
 	status = fields.CharField(null=False, max_length=255, default="Open")
+
+class Embeds(Model):	
+	id = fields.IntField(pk=True)
+	guild_id = fields.BigIntField(null=False)
+	title = fields.CharField(null=True, max_length=255)
+	title_url = fields.CharField(null=True, max_length=255)
+	description = fields.TextField(null=True, max_length=255)
+	color = fields.BigIntField(null=True, max_length=255)
+	author = fields.BigIntField(null=True, max_length=255)
+	author_icon = fields.BooleanField(null=True)
+	thumbnail = fields.CharField(null=True, max_length=255)
+	image = fields.CharField(null=True, max_length=255)
+	footer = fields.TextField(null=True, max_length=255)
+	footer_icon = fields.CharField(null=True, max_length=255)
+	status = fields.CharField(null=True, max_length=255, default="disabled")
