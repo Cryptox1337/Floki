@@ -49,6 +49,31 @@ class Floki(commands.Bot):
 
 		print(f'Logged on as {self.user} (ID: {self.user.id})')
 
+
+	@commands.Cog.listener()
+	async def on_guild_channel_create(self, channel):
+		await Channels.get_or_create(guild_id=channel.guild.id, channel_id=channel.id)
+
+	@commands.Cog.listener()
+	async def on_guild_channel_delete(self, channel):
+		_channel = await Channels.filter(guild_id=channel.guild.id, channel_id=channel.id).first()
+
+		if _channel:
+			await _channel.delete()
+
+
+	@commands.Cog.listener()
+	async def on_guild_role_create(self, role):
+		await Roles.get_or_create(guild_id=role.guild.id, role_id=role.id)
+
+	@commands.Cog.listener()
+	async def on_guild_role_delete(self, role):
+		_channel = await Roles.filter(guild_id=role.guild.id, role_id=role.id).first()
+
+		if _channel:
+			await _channel.delete()
+
+
 async def check_role_and_channels(guild):
 	channels = await Channels.filter(guild_id=guild.id)
 	roles = await Roles.filter(guild_id=guild.id)
