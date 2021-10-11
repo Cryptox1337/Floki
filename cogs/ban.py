@@ -64,12 +64,12 @@ class Ban(commands.Cog):
 
 		status = await ban(inter.guild, inter.author, user, duration, reason)
 
-		if status == "banned":
+		if status == "USER_BANNED":
 			embed = disnake.Embed(
 				color=GREEN,
-				description=(await get_lang(inter.guild, 'BAN_TEXT')).format(user.name)
+				description=(await get_lang(inter.guild, 'USER_BANNED')).format(user.name)
 			)
-		elif status == "already_banned":
+		elif status == "ALREADY_BANNED":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'ALREADY_BANNED')).format(user.name)
@@ -92,12 +92,12 @@ class Ban(commands.Cog):
 
 		status = await unban(inter.guild, inter.author, user, reason)
 
-		if status == "unbaned":
+		if status == "USER_UNBANNED":
 			embed = disnake.Embed(
 				color=GREEN,
-				description=(await get_lang(inter.guild, 'UNBAN_TEXT')).format(user.name)
+				description=(await get_lang(inter.guild, 'USER_UNBANNED')).format(user.name)
 			)
-		elif status == "not_banned":
+		elif status == "NOT_BANNED":
 			embed = disnake.Embed(
 				colour=RED,
 				description=(await get_lang(inter.guild, 'NOT_BANNED')).format(user.name)
@@ -120,7 +120,7 @@ async def ban(guild, author, user, duration, reason):
 		already_banned = False
 	
 	if already_banned or await getIsUserBanned(guild, user):
-		return "already_banned"
+		return "ALREADY_BANNED"
 
 	await Bans.create(
 		guild_id = guild.id,
@@ -149,7 +149,7 @@ async def ban(guild, author, user, duration, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await ban_response.send(embed=embed)
 
-	return "banned"
+	return "USER_BANNED"
 
 async def unban(guild, author, user, reason):
 	ban_response = await getResponseChannel(guild, "ban")
@@ -160,7 +160,7 @@ async def unban(guild, author, user, reason):
 		banned = False
 
 	if not banned or not await getIsUserBanned(guild, user):
-		return "not_banned"
+		return "NOT_BANNED"
 
 	banned.status = "unbanned"
 	banned.end_date = await getNowUTCDate()
@@ -182,7 +182,7 @@ async def unban(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await ban_response.send(embed=embed)
 
-	return "unbaned"
+	return "USER_UNBANNED"
 
 
 def setup(bot):

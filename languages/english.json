@@ -14,11 +14,11 @@
 	"USER_WARNED": "{0} was successfully warned!",
 
 	"BAN_TITLE": "User banned!",
-	"BAN_TEXT": "User {0} has been banned",
+	"USER_BANNED": "User {0} has been banned",
 	"ALREADY_BANNED": "This User is already banned",
 
 	"UNBAN_TITLE": "User Unbanned!",
-	"UNBAN_TEXT": "{0} is now unbanned!",
+	"USER_UNBANNED": "{0} is now unbanned!",
 	"NOT_BANNED": "This User is not banned",
 
 	"TEMPORARY_CREATED": "Temporary-Voice successfully created!",
