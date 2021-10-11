@@ -20,12 +20,12 @@ class Kick(commands.Cog):
 
 		status = await kick(inter.guild, inter.author, user, reason)
 
-		if status == "user_kicked":
+		if status == "USER_KICKED":
 			embed = disnake.Embed(
 				color=GREEN,
-				description=(await get_lang(inter.guild, 'KICK_TEXT')).format(user.name)
+				description=(await get_lang(inter.guild, 'USER_KICKED')).format(user.name)
 			)
-		elif status == "user_not_exist":
+		elif status == "USER_NOT_EXIST":
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'USER_NOT_EXIST')
@@ -43,7 +43,7 @@ async def kick(guild, author, user, reason):
 	kick_response = await getResponseChannel(guild, "kick")
 
 	if not exist:
-		return "user_not_exist"
+		return "USER_NOT_EXIST"
 
 	await guild.kick(user=user, reason=reason)
 
@@ -58,7 +58,7 @@ async def kick(guild, author, user, reason):
 	if kick_response:
 		embed = disnake.Embed(
 			color=GREEN,
-			description=(await get_lang(guild, 'KICK_TEXT')).format(user.name),
+			description=(await get_lang(guild, 'USER_KICKED')).format(user.name),
 			)
 		if user.avatar:
 			embed.set_author(name=f"{user.name}", icon_url=user.avatar)
@@ -70,7 +70,7 @@ async def kick(guild, author, user, reason):
 		embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Kicks.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 		await kick_response.send(embed=embed)
 
-	return "user_kicked"
+	return "USER_KICKED"
 
 def setup(bot):
 	bot.add_cog(Kick(bot))

@@ -8,7 +8,7 @@
 	"UNMUTE_NOT_MUTED": "{0} is not muted!",
 
 	"KICK_TITLE": "User kicked!",
-	"KICK_TEXT": "{0} was successfully kicked!",
+	"USER_KICKED": "{0} was successfully kicked!",
 
 	"WARN_TITLE": "User warned!",
 	"USER_WARNED": "{0} was successfully warned!",

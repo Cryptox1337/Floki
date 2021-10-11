@@ -9,7 +9,7 @@
 	"UNMUTE_NOT_MUTED": "{0} ist nicht gemuted!",
 
 	"KICK_TITLE": "Benutzer gekickt!",
-	"KICK_TEXT": "{0} wurde erfolgreich gekickt!",
+	"USER_KICKED": "{0} wurde erfolgreich gekickt!",
 
 	"WARN_TITLE": "Benutzer verwarnt!",
 	"USER_WARNED": "{0} wurde erfolgreich verwarnt!",
