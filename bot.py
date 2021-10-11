@@ -44,7 +44,23 @@ class Floki(commands.Bot):
 				if not role.managed and not role.name == "@everyone":
 					await Roles.get_or_create(guild_id=guild.id, role_id=role.id)
 
+
+			await check_role_and_channels(guild)
+
 		print(f'Logged on as {self.user} (ID: {self.user.id})')
 
+async def check_role_and_channels(guild):
+	channels = await Channels.filter(guild_id=guild.id)
+	roles = await Roles.filter(guild_id=guild.id)
 
+	for channel in channels:
+		_channel = guild.get_channel(channel.channel_id)
 
+		if not _channel:
+			await channel.delete()
+
+	for role in roles:
+		_role = disnake.utils.get(guild.roles, id=role.role_id)
+
+		if not _role:
+			await role.delete()
