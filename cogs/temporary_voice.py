@@ -15,7 +15,7 @@ class Temporary_Voice(commands.Cog):
 	@tasks.loop(minutes=0.1)
 	async def temporay_voice_loop(self):
 		for guild in self.bot.guilds:
-			voice_config = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enable")
+			voice_config = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
 
 			if voice_config:
 				temp_channels = await Temporary_Voice_Channels.filter(guild_id=guild.id)
@@ -79,7 +79,7 @@ class Temporary_Voice(commands.Cog):
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, user, before, after):
 		guild = user.guild
-		voice_config = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enable")
+		voice_config = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
 
 		if voice_config:
 			if after.channel:
@@ -156,7 +156,7 @@ async def create_temporary_voice(guild, category, limit, bitrate):
 		category_id=category.id,
 		limit=limit,
 		bitrate=bitrate,
-		status="enable"
+		status="enabled"
 	)
 
 	return "temporary_voice_created"

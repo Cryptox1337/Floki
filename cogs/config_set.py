@@ -52,7 +52,7 @@ class Config_Set(commands.Cog):
 		result, created = await Response_Channels.get_or_create(guild_id=inter.guild.id, response_type=response_type)
 		if result:
 			result.channel_id = channel.id
-			result.status = "enable"
+			result.status = "enabled"
 			await result.save()
 
 		if created:

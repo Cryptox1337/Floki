@@ -53,7 +53,7 @@ async def getResponseChannel(guild, response_type):
 	response_channel = None
 	response = await Response_Channels.filter(guild_id=guild.id, response_type=response_type).first()
 	if response:
-		if response.status == "enable":
+		if response.status == "enabled":
 			try:
 				response_channel = guild.get_channel(response.channel_id)
 			except:
