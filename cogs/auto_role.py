@@ -51,7 +51,7 @@ class Auto_Role(commands.Cog):
 
 async def create_auto_role(guild, role):
 	if not role:
-		role = await guild.create_role(name="new_auto_role")
+		role = await guild.create_role(name="new_auto_role", reason="create auto_role")
 		await Roles.get_or_create(guild_id=guild.id, role_id=role.id)
 
 	role_table = await Roles.filter(guild_id=guild.id, role_id=role.id).first()

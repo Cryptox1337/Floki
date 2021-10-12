@@ -21,7 +21,7 @@ class Mute(commands.Cog):
 			
 			if not role:
 				perms = disnake.Permissions(send_messages=False, speak=False)
-				role = await guild.create_role(name="muted", permissions=perms)
+				role = await guild.create_role(name="muted", permissions=perms, reason="mute_role does not exist")
 				server.mute_role = role.id
 				await server.save()
 
@@ -139,7 +139,7 @@ async def mute(guild, author, user, duration, reason):
 
 	if not role:
 		perms = disnake.Permissions(send_messages=False, speak=False)
-		role = await guild.create_role(name="muted", permissions=perms)
+		role = await guild.create_role(name="muted", permissions=perms, reason="mute_role does not exist")
 		server.mute_role = role.id
 		await server.save()
 
@@ -186,7 +186,7 @@ async def unmute(guild, author, user, reason):
 
 	if not role:
 		perms = disnake.Permissions(send_messages=False, speak=False)
-		role = await guild.create_role(name="muted", permissions=perms)
+		role = await guild.create_role(name="muted", permissions=perms, reason="mute_role does not exist")
 		server.mute_role = role.id
 		await server.save()
 
