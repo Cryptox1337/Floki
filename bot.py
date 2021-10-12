@@ -85,7 +85,7 @@ async def check_role_and_channels(guild):
 			await channel.delete()
 
 	for role in roles:
-		_role = disnake.utils.get(guild.roles, id=role.role_id)
+		_role = guild.get_role(role.role_id)
 
 		if not _role:
 			await role.delete()

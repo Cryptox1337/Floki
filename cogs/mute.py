@@ -15,7 +15,7 @@ class Mute(commands.Cog):
 	async def mute_loop(self):
 		for guild in self.bot.guilds:
 			server = await Guilds.get(guild_id=guild.id)
-			role = disnake.utils.get(guild.roles, id=server.mute_role)
+			role = guild.get_role(server.mute_role)
 			mute_response = await getResponseChannel(guild, "mute")
 			mute_list = await Mutes.filter(guild_id=guild.id, status="muted")
 			
@@ -129,7 +129,7 @@ class Mute(commands.Cog):
 
 async def mute(guild, author, user, duration, reason):
 	server = await Guilds.get(guild_id=guild.id)
-	role = disnake.utils.get(guild.roles, id=server.mute_role)
+	role = guild.get_role(server.mute_role)
 	mute_response = await getResponseChannel(guild, "mute")
 
 	exist = guild.get_member(user.id)
@@ -182,7 +182,7 @@ async def mute(guild, author, user, duration, reason):
 
 async def unmute(guild, author, user, reason):
 	server = await Guilds.get(guild_id=guild.id)
-	role = disnake.utils.get(guild.roles, id=server.mute_role)
+	role = guild.get_role(server.mute_role)
 	mute_response = await getResponseChannel(guild, "mute")
 
 	exist = guild.get_member(user.id)

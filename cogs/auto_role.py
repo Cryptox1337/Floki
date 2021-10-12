@@ -44,7 +44,7 @@ class Auto_Role(commands.Cog):
 		auto_roles = await Roles.filter(guild_id=user.guild.id, auto_role=True)
 
 		for auto_role in auto_roles:
-			role = disnake.utils.get(user.guild.roles, id=auto_role.role_id)
+			role = user.guild.get_role(auto_role.role_id)
 			if role not in user.roles:
 				await user.add_roles(role, reason="auto_role")
 
