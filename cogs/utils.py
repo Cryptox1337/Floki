@@ -50,17 +50,15 @@ async def convertTimeZone(guild, time):
 
 
 async def getResponseChannel(guild, response_type):
-	response_channel = None
 	response = await Response_Channels.filter(guild_id=guild.id, response_type=response_type).first()
 	if response:
 		if response.status == "enabled":
-			try:
-				response_channel = guild.get_channel(response.channel_id)
-			except:
-				pass
+			response_channel = guild.get_channel(response.channel_id)
+			
+			if response_channel:
+				return response_channel
 
-	return response_channel
-
+	return None
 
 response_string = {}
 for i in os.listdir('./languages'):
