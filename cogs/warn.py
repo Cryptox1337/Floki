@@ -41,7 +41,7 @@ class Warn(commands.Cog):
 async def warn(guild, author, user, reason):
 	exist = guild.get_member(user.id)
 	warn_response = await getResponseChannel(guild, "warn")
-	user_db = await Users.get(guild_id=guild.id, user_id=user.id)
+	user_db = await Users.filter(guild_id=guild.id, user_id=user.id).first()
 
 	if not exist:
 		return "USER_NOT_EXIST"

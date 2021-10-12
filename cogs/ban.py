@@ -113,11 +113,7 @@ class Ban(commands.Cog):
 
 async def ban(guild, author, user, duration, reason):
 	ban_response = await getResponseChannel(guild, "ban")
-
-	try:
-		already_banned = await Bans.get(guild_id=guild.id, user_id=user.id, status="banned")
-	except:
-		already_banned = False
+	already_banned = await Bans.filter(guild_id=guild.id, user_id=user.id, status="banned").first()
 	
 	if already_banned or await getIsUserBanned(guild, user):
 		return "ALREADY_BANNED"
@@ -153,11 +149,7 @@ async def ban(guild, author, user, duration, reason):
 
 async def unban(guild, author, user, reason):
 	ban_response = await getResponseChannel(guild, "ban")
-
-	try:
-		banned = await Bans.get(guild_id=guild.id, user_id=user.id, status="banned")
-	except:
-		banned = False
+	banned = await Bans.filter(guild_id=guild.id, user_id=user.id, status="banned").first()
 
 	if not banned or not await getIsUserBanned(guild, user):
 		return "NOT_BANNED"

@@ -143,10 +143,7 @@ async def mute(guild, author, user, duration, reason):
 		server.mute_role = role.id
 		await server.save()
 
-	try:
-		already_muted = await Mutes.get(guild_id=guild.id, user_id=user.id, status="muted")
-	except:
-		already_muted = False	
+	already_muted = await Mutes.filter(guild_id=guild.id, user_id=user.id, status="muted").first()
 	
 	if already_muted or role in user.roles:
 		return "MUTE_ALREADY_MUTED"
@@ -193,10 +190,8 @@ async def unmute(guild, author, user, reason):
 		server.mute_role = role.id
 		await server.save()
 
-	try:
-		muted = await Mutes.get(guild_id=guild.id, user_id=user.id, status="muted")
-	except:
-		muted = False	
+	muted = await Mutes.filter(guild_id=guild.id, user_id=user.id, status="muted").first()
+
 	
 	if exist:
 		if not muted or not role in user.roles:
