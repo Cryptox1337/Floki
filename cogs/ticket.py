@@ -297,7 +297,7 @@ async def create_new_ticket(guild, user, config):
 		user: disnake.PermissionOverwrite(read_messages=True),
 	}
 
-	category = disnake.get(guild.categories, id=config.category_id)
+	category = guild.get_channel(config.category_id)
 
 	if not category:
 		category = await guild.create_category(name="ticket_category")
