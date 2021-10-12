@@ -47,10 +47,10 @@ class Temporary_Voice(commands.Cog):
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		category: disnake.CategoryChannel = Param(None,desc="Select a Categorie"),
-		limit: str = Param(0, desc="amount between 0-99"),
-		bitrate: str = Param(64, desc="amount between 8-96"),
-		
+		limit: int = Param(0, desc="amount between 0 - 99"),
+		bitrate: int = Param(64, desc="amount between 8Kbps - 96Kbps (with Boost 128Kbps)"),		
 	):
+
 		status = await create_temporary_voice(inter.guild, category, limit, bitrate)
 
 		if status == "TEMPORARY_CREATED":
@@ -66,7 +66,7 @@ class Temporary_Voice(commands.Cog):
 		elif status == "TEMPORARY_INCORRECT_BITRATE":
 			embed = disnake.Embed(
 				colour=RED,
-				description=(await get_lang(inter.guild, 'TEMPORARY_INCORRECT_BITRATE')).format(bitrate)
+				description=(await get_lang(inter.guild, 'TEMPORARY_INCORRECT_BITRATE')).format(bitrate, int(inter.guild.bitrate_limit / 1000))
 			)
 		else:
 			embed = disnake.Embed(
@@ -98,12 +98,17 @@ class Temporary_Voice(commands.Cog):
 
 						temp_channel_name = f"{user.name}´s Talk"
 
+						bitrate = temporary.bitrate
+
+						if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
+							bitrate = 64
+
 						temp_channel = await guild.create_voice_channel(
 							name=temp_channel_name,
 							category=category,
 							overwrites=overwrites,
 							user_limit=temporary.limit,
-							bitrate=temporary.bitrate * 1000,
+							bitrate=bitrate * 1000,
 						)
 						await user.move_to(temp_channel)
 
@@ -139,7 +144,7 @@ async def create_temporary_voice(guild, category, limit, bitrate):
 	if limit < 0 or limit > 99:
 		return "TEMPORARY_INCORRECT_LIMIT"
 
-	if bitrate < 8 or bitrate > 96:
+	if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
 		return "TEMPORARY_INCORRECT_BITRATE"
 
 	if not category:

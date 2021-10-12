@@ -24,7 +24,7 @@
 
 	"TEMPORARY_CREATED": "Temporary-Voice erfolgreich erstellt!",
 	"TEMPORARY_INCORRECT_LIMIT": "limit: {0} ist nicht Korrekt wähle zwischen 0 - 100!",
-	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} ist nicht Korrekt wähle zwischen 8 - 96!",
+	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} ist nicht Korrekt wähle zwischen 8 - {1}!",
 
 	"TICKET_SUCCESSFULLY": "Ticket wurde erfolgreich erstellt",
 
