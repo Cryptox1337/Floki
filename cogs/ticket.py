@@ -68,11 +68,11 @@ class Ticket(commands.Cog):
 					ticket_category = channel.guild.get_channel(config.category_id)
 
 					if not ticket_category:
-						ticket_category = await channel.guild.create_category(name="ticket_category")
+						ticket_category = await channel.guild.create_category(name="ticket_category", reason="create ticket category")
 						config.category_id = ticket_category.id
 
 					if not ticket_channel:
-						ticket_channel = await channel.guild.create_text_channel(name="ticket_channel", category=ticket_category, position=0)
+						ticket_channel = await channel.guild.create_text_channel(name="ticket_channel", category=ticket_category, position=0, reason="create ticket channel")
 						config.channel_id = ticket_channel.id
 
 						embed, view = await get_ticket_message(channel.guild, "Create")
@@ -120,11 +120,11 @@ class Ticket(commands.Cog):
 					ticket_category = message.guild.get_channel(config.category_id)
 
 					if not ticket_category:
-						ticket_category = await message.guild.create_category(name="ticket_category")
+						ticket_category = await message.guild.create_category(name="ticket_category", reason="create ticket category")
 						config.category_id = ticket_category.id
 
 					if not ticket_channel:
-						ticket_channel = await message.guild.create_text_channel(name="ticket_channel", category=ticket_category)
+						ticket_channel = await message.guild.create_text_channel(name="ticket_channel", category=ticket_category, reason="create ticket channel")
 						config.channel_id = ticket_channel.id
 
 					embed = disnake.Embed(description = await get_lang(message.guild, 'TICKET_CREATE_EMBED'))
@@ -181,11 +181,11 @@ class Ticket(commands.Cog):
 				ticket_category = guild.get_channel(config.category_id)
 
 				if not ticket_category:
-					ticket_category = await guild.create_category(name="ticket_category")
+					ticket_category = await guild.create_category(name="ticket_category", reason="create ticket category")
 					config.category_id = ticket_category.id
 
 				if not ticket_channel:
-					ticket_channel = await guild.create_text_channel(name="ticket_channel", category=ticket_category, position=0)
+					ticket_channel = await guild.create_text_channel(name="ticket_channel", category=ticket_category, position=0, reason="create ticket channel")
 					config.channel_id = ticket_channel.id
 
 				message = ticket_channel.get_partial_message(config.message_id)
@@ -248,13 +248,13 @@ class Ticket(commands.Cog):
 
 async def setup_ticket_config(guild, channel, category):
 	if not category and not channel:
-		category = await guild.create_category(name="ticket_category")
-		channel = await guild.create_text_channel(name="ticket_channel", category=category)
+		category = await guild.create_category(name="ticket_category", reason="create ticket category")
+		channel = await guild.create_text_channel(name="ticket_channel", category=category, reason="create ticket channel")
 	elif not category:
-		category = await guild.create_category(name="ticket_category")
+		category = await guild.create_category(name="ticket_category", reason="create ticket category")
 		await channel.edit(category=category)
 	elif not channel:
-		channel = await guild.create_text_channel(name="ticket_channel", category=category)
+		channel = await guild.create_text_channel(name="ticket_channel", category=category, reason="create ticket channel")
 	else:
 		return
 
@@ -300,11 +300,11 @@ async def create_new_ticket(guild, user, config):
 	category = guild.get_channel(config.category_id)
 
 	if not category:
-		category = await guild.create_category(name="ticket_category")
+		category = await guild.create_category(name="ticket_category", reason="create ticket category")
 		config.category_id = category.id
 		await config.save()
 
-	channel = await guild.create_text_channel("user-ticket", overwrites=overwrites, category=category)
+	channel = await guild.create_text_channel("user-ticket", overwrites=overwrites, category=category, reason="create ticket channel")
 
 	view = disnake.ui.View()
 	buttons = disnake.ui.Button(style=disnake.ButtonStyle.green, label= await get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")

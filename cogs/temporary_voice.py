@@ -148,11 +148,12 @@ async def create_temporary_voice(guild, category, limit, bitrate):
 		return "TEMPORARY_INCORRECT_BITRATE"
 
 	if not category:
-		category = await guild.create_category(name="temporary_voice_category")
+		category = await guild.create_category(name="temporary_voice_category", reason="create temporary voice category")
 
 	create_voice = await guild.create_voice_channel(
 		name="create",
-		category=category
+		category=category,
+		reason="create temporary voice channel"
 	)
 
 	await Temporary_Voice_Config.create(
