@@ -10,7 +10,7 @@ import random
 class Temporary_Voice(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
-		self.temporay_voice_loop.start()
+#		self.temporay_voice_loop.start()
 
 	@tasks.loop(minutes=0.1)
 	async def temporay_voice_loop(self):
@@ -109,60 +109,75 @@ class Temporary_Voice(commands.Cog):
 		voice_configs = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
 
 		if voice_configs:
-			if after.channel:
-				for voice_config in voice_configs:
+			for voice_config in voice_configs:
+				temp_channels = await Temporary_Voice_Channels.filter(guild_id=guild.id, config_id=voice_config.id)
+				voice_channel = guild.get_channel(voice_config.channel_id)
+				voice_category = guild.get_channel(voice_config.category_id)
+
+				if not voice_category:
+					voice_category = await guild.create_category(name="temporary_voice_category", reason="create category for temporary voice")
+					voice_config.category_id = voice_category.id
+					await voice_config.save()
+
+				if not voice_channel:
+					voice_channel = await guild.create_voice_channel(name="create", category=voice_category, position=0, reason="create channel for temporary voice")
+					voice_config.channel_id = voice_channel.id
+					await voice_config.save()
+
+				if not voice_channel.category == voice_category:
+					await voice_channel.edit(category=voice_category, position=0)
+
+				if not voice_channel.position == 0:
+					await voice_channel.edit(position=0)
+
+				if after.channel:
 					if after.channel.id == voice_config.channel_id:
 						overwrites = {
-							user: disnake.PermissionOverwrite(
-								connect=True, mute_members=True, manage_channels=True
-							),
-						}
+						user: disnake.PermissionOverwrite(
+							connect=True, mute_members=True, manage_channels=True
+						),
+					}
 
-						try:
-							category = guild.get_channel(voice_config.category_id)
-						except:
-							category = after.channel.category
 
-						temp_channel_name = f"{user.name}´s Talk"
+					temp_channel_name = f"{user.name}´s Talk"
 
-						bitrate = voice_config.bitrate
+					bitrate = voice_config.bitrate
 
-						if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
-							bitrate = 64
+					if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
+						bitrate = 64
 
-						temp_channel = await guild.create_voice_channel(
-							name=temp_channel_name,
-							category=category,
-							overwrites=overwrites,
-							user_limit=voice_config.limit,
-							bitrate=bitrate * 1000,
+					temp_channel = await guild.create_voice_channel(
+						name=temp_channel_name,
+						category=voice_category.id,
+						overwrites=overwrites,
+						user_limit=voice_config.limit,
+						bitrate=bitrate * 1000,
+					)
+					await user.move_to(temp_channel)
+
+					await Temporary_Voice_Channels.create(
+						guild_id = guild.id,
+						owner_id = user.id,
+						channel_id = temp_channel.id,
+						config_id = voice_config.id,
 						)
-						await user.move_to(temp_channel)
 
-						await Temporary_Voice_Channels.create(
-							guild_id = guild.id,
-							owner_id = user.id,
-							channel_id = temp_channel.id,
-							config_id = voice_config.id,
-							)
+				if before.channel:
+					if temp_channels:
+						for temporary in temp_channels:
+							if len(before.channel.members) == 0:
+								if before.channel.id == temporary.channel_id:
+									await before.channel.delete()
+									await temporary.delete()
 
-			if before.channel:
-				temp_channels = await Temporary_Voice_Channels.filter(guild_id=guild.id)
-				if temp_channels:
-					for temporary in temp_channels:
-						if len(before.channel.members) == 0:
-							if before.channel.id == temporary.channel_id:
-								await before.channel.delete()
-								await temporary.delete()
+							if user.id == temporary.owner_id and not len(before.channel.members) == 0:
+								new_owner = random.choice(before.channel.members)
 
-						if user.id == temporary.owner_id and not len(before.channel.members) == 0:
-							new_owner = random.choice(before.channel.members)
+								await before.channel.set_permissions(user, overwrite=None)
+								await before.channel.set_permissions(new_owner, connect=True, mute_members=True, manage_channels=True)
 
-							await before.channel.set_permissions(user, overwrite=None)
-							await before.channel.set_permissions(new_owner, connect=True, mute_members=True, manage_channels=True)
-
-							temporary.owner_id = new_owner.id
-							await temporary.save()
+								temporary.owner_id = new_owner.id
+								await temporary.save()
 
 
 
