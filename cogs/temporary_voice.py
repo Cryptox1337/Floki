@@ -106,12 +106,12 @@ class Temporary_Voice(commands.Cog):
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, user, before, after):
 		guild = user.guild
-		voice_config = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
+		voice_configs = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
 
-		if voice_config:
+		if voice_configs:
 			if after.channel:
-				for temporary in voice_config:
-					if after.channel.id == temporary.channel_id:
+				for voice_config in voice_configs:
+					if after.channel.id == voice_config.channel_id:
 						overwrites = {
 							user: disnake.PermissionOverwrite(
 								connect=True, mute_members=True, manage_channels=True
@@ -119,13 +119,13 @@ class Temporary_Voice(commands.Cog):
 						}
 
 						try:
-							category = guild.get_channel(temporary.category_id)
+							category = guild.get_channel(voice_config.category_id)
 						except:
 							category = after.channel.category
 
 						temp_channel_name = f"{user.name}´s Talk"
 
-						bitrate = temporary.bitrate
+						bitrate = voice_config.bitrate
 
 						if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
 							bitrate = 64
@@ -134,7 +134,7 @@ class Temporary_Voice(commands.Cog):
 							name=temp_channel_name,
 							category=category,
 							overwrites=overwrites,
-							user_limit=temporary.limit,
+							user_limit=voice_config.limit,
 							bitrate=bitrate * 1000,
 						)
 						await user.move_to(temp_channel)
@@ -143,7 +143,7 @@ class Temporary_Voice(commands.Cog):
 							guild_id = guild.id,
 							owner_id = user.id,
 							channel_id = temp_channel.id,
-							config_id = temporary.id,
+							config_id = voice_config.id,
 							)
 
 			if before.channel:
