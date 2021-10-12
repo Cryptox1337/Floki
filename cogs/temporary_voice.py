@@ -20,26 +20,29 @@ class Temporary_Voice(commands.Cog):
 			if voice_config:
 				temp_channels = await Temporary_Voice_Channels.filter(guild_id=guild.id)
 				for temporary in temp_channels:
-					for channel in guild.voice_channels:
-						if channel.id == temporary.channel_id:
-							if len(channel.members) == 0:
-								await channel.delete()
-								await temporary.delete()
-								
-							else:
-								for user in channel.members:
-									owner = False
-									if user.id == temporary.owner_id:
-										owner = user
+					temporary_channel = guild.get_channel(temporary.channel_id)
 
-									if not owner:
-										owner = await self.bot.fetch_user(temporary.owner_id)
-										new_owner = random.choice(channel.members)
-										await channel.set_permissions(owner, overwrite=None)
-										await channel.set_permissions(new_owner, connect=True, mute_members=True, manage_channels=True)
+					if temporary_channel:
+						if len(temporary_channel.members) == 0:
+							await temporary_channel.delete()
+							await temporary.delete()
+						else:
+							for user in temporary_channel.members:
+								owner = False
+								if user.id == temporary.owner_id:
+									owner = user
 
-										temporary.owner_id = new_owner.id
-										await temporary.save()
+								if not owner:
+									owner = await self.bot.fetch_user(temporary.owner_id)
+									new_owner = random.choice(temporary_channel.members)
+									await temporary_channel.set_permissions(owner, overwrite=None)
+									await temporary_channel.set_permissions(new_owner, connect=True, mute_members=True, manage_channels=True)
+
+									temporary.owner_id = new_owner.id
+									await temporary.save()
+
+					else:
+						await temporary.delete()						
 
 
 	@commands.slash_command(name = "temporary_voice", description="create temporary_voice")
