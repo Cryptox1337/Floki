@@ -37,22 +37,22 @@ class Ticket(commands.Cog):
 	@commands.Cog.listener()
 	async def on_interaction(self, inter: disnake.MessageInteraction):
 		try:
-			compnent = inter.component
+			component = inter.component
 		except:
-			compnent = None
+			component = None
 
-		if compnent:
-			if compnent.custom_id == "ticket_create":
+		if component:
+			if component.custom_id == "ticket_create":
 				await on_butoon_create_ticket(inter)
-			elif compnent.custom_id == "ticket_lock":
+			elif component.custom_id == "ticket_lock":
 				await on_butoon_ticket(inter, "ticket_lock")
-			elif compnent.custom_id == "ticket_yes":
+			elif component.custom_id == "ticket_yes":
 				await on_butoon_ticket(inter, "ticket_yes")
-			elif compnent.custom_id == "ticket_no":
+			elif component.custom_id == "ticket_no":
 				await on_butoon_ticket(inter, "ticket_no")
-			elif compnent.custom_id == "ticket_reopen":
+			elif component.custom_id == "ticket_reopen":
 				await on_butoon_ticket(inter, "ticket_reopen")
-			elif compnent.custom_id == "ticket_close":
+			elif component.custom_id == "ticket_close":
 				await on_butoon_ticket(inter, "ticket_close")
 
 	@commands.Cog.listener()
