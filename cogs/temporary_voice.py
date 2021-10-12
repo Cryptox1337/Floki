@@ -148,7 +148,7 @@ class Temporary_Voice(commands.Cog):
 
 					temp_channel = await guild.create_voice_channel(
 						name=temp_channel_name,
-						category=voice_category.id,
+						category=voice_category,
 						overwrites=overwrites,
 						user_limit=voice_config.limit,
 						bitrate=bitrate * 1000,
