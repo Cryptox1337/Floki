@@ -10,7 +10,7 @@ import random
 class Temporary_Voice(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
-#		self.temporay_voice_loop.start()
+		self.temporay_voice_loop.start()
 
 	@tasks.loop(minutes=0.1)
 	async def temporay_voice_loop(self):
