@@ -11,8 +11,12 @@ class Ticket(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-	@commands.slash_command(name = "ticket", description="configure the ticket system")
-	async def ticket(
+	@commands.slash_command()
+	async def ticket(self, inter):
+		pass
+
+	@ticket.sub_command(name = "create", description="create a ticket configuration")
+	async def create(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		channel: disnake.TextChannel = Param(None, desc="Select a Text-Channel"),
