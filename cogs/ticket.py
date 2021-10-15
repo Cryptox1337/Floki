@@ -22,7 +22,7 @@ class Ticket(commands.Cog):
 		channel: disnake.TextChannel = Param(None, desc="Select a Text-Channel"),
 		category: disnake.CategoryChannel = Param(None, desc="Select a Categorie"),
 	):
-
+		await inter.response.defer()
 		status = await setup_ticket_config(inter.guild, channel, category)
 
 		if status == "TICKET_SUCCESSFULLY":
@@ -36,7 +36,7 @@ class Ticket(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 
 	@ticket.sub_command(name = "remove", description="remove a ticket configuration")
