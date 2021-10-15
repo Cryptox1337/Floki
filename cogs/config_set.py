@@ -23,6 +23,8 @@ class Config_Set(commands.Cog):
 			]
 		)
 	):
+		await inter.response.defer()
+
 		guild = await Guilds.get(guild_id=inter.guild.id)
 
 		setattr(guild, "lang", language)
@@ -31,7 +33,8 @@ class Config_Set(commands.Cog):
 		embed = disnake.Embed(
 			description= "lang changed",
 		)
-		await inter.response.send_message(embed=embed)
+
+		await inter.edit_original_message(embed=embed)
 
 	@set.sub_command(name = 'response_channel', description="configure a response channel")
 	async def set_respone_channel(
@@ -49,6 +52,8 @@ class Config_Set(commands.Cog):
 		),
 		channel: disnake.TextChannel = Param(desc="Select a Text-Channel"),
 	):
+		await inter.response.defer()
+
 		result, created = await Response_Channels.get_or_create(guild_id=inter.guild.id, response_type=response_type)
 		if result:
 			result.channel_id = channel.id
@@ -64,7 +69,7 @@ class Config_Set(commands.Cog):
 				description= "updated",
 			)
 
-		await inter.response.send_message(embed=embed)			
+		await inter.edit_original_message(embed=embed)
 
 
 def setup(bot):
