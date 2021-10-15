@@ -80,7 +80,7 @@ class Temporary_Voice(commands.Cog):
 		limit: int = Param(0, desc="amount between 0 - 99"),
 		bitrate: int = Param(64, desc="amount between 8Kbps - 96Kbps (with Boost 128Kbps)"),		
 	):
-
+		await inter.response.defer()
 		status = await create_temporary_voice(inter.guild, category, limit, bitrate)
 
 		if status == "TEMPORARY_CREATED":
@@ -104,7 +104,7 @@ class Temporary_Voice(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, user, before, after):
