@@ -1,5 +1,4 @@
 {
-	
 	"MUTED": "Benutzer gestummt!",
 	"MUTE_SUCCESSFULLY": "Benutzer {0} wurde Stumm geschalten!",
 	"MUTE_ALREADY_MUTED": "{0} ist bereits Stumm geschalten!",
@@ -27,7 +26,13 @@
 	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} ist nicht Korrekt wähle zwischen 8 - {1}!",
 
 	"TICKET_SUCCESSFULLY": "Ticket wurde erfolgreich erstellt",
-
+	"TICKET_CREATE_EMBED": "Ticket erstellen",
+	"TICKET_OPEN_EMBED": "Wenn Sie das Ticket schließen möchten, drücken Sie den Knopf",
+	"TICKET_PENDING_EMBED": "Möchten Sie das Ticket wirklich schließen?",
+	"TICKET_LOCKED_EMBED": "Das Ticket ist jetzt gesperrt. Möchten Sie es endgültig löschen?",
+	"TICKET_CLOSED_EMBED": "Dieses Ticket wurde endgültig geschlossen und wird in wenigen Sekunden gelöscht...",
+	"TICKT_CONFIG_REMOVED": "Ticket wurde erfolgreich entfernt",
+	"NO_TICKET_CONFIG": "Es wurde keine Ticketkonfiguration gefunden",
 
 	"COUNT_CREATED": "Der Count Channel wurde erfolgreich erstellt!",
 	"COUNT_ALREADY_EXIST": "Der Count Channel existiert bereits!",
@@ -46,7 +51,13 @@
 	"GENERAL_DURATION": "Dauer",
 	"GENERAL_COUNT": "Anzahl",
 	"GENERAL_CLOSE": "Schließen",
+	"GENERAL_CANCEL": "Abbrechen",
+	"GENERAL_REOPEN": "Wieder öffnen",
 
+	"GENERAL_YES": "Ja",
+	"GENERAL_NO": "Nein",
+
+	"NOTHING_SELECTED": "Im Auswahlmenü wurde nichts ausgewählt",
 	"USER_NOT_EXIST": "Dieser Benutzer existiert nicht auf diesem Server!",
 	"NOTHING_TO_CHANGE": "Es war nichts zu ändern!",
 	"UNKNOWN_ERROR": "Unbekannter Fehler. Bitte kontaktieren Sie den Support!"

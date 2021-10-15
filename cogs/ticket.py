@@ -38,6 +38,54 @@ class Ticket(commands.Cog):
 
 		await inter.response.send_message(embed=embed)
 
+
+	@ticket.sub_command(name = "remove", description="remove a ticket configuration")
+	async def remove(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+	):
+		await inter.response.defer()
+		status, values = await select_ticket_config(inter)
+
+		if status == "NO_TICKET_CONFIG":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NO_TICKET_CONFIG')
+			)
+
+		elif status == "NOTHING_SELECTED":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NOTHING_SELECTED')
+			)
+
+		elif status == "SELECTED" and values:
+			status = await remove_ticket_config(inter.guild, values)
+
+			if status == "TICKT_CONFIG_REMOVED":
+				embed = disnake.Embed(
+					color=GREEN,
+					description=await get_lang(inter.guild, 'TICKT_CONFIG_REMOVED')
+				)
+
+			elif status == "NO_TICKET_CONFIG":
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'NO_TICKET_CONFIG')
+				)
+			else:
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+				)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed, view=None)
+
 	@commands.Cog.listener()
 	async def on_interaction(self, inter: disnake.MessageInteraction):
 		try:
@@ -372,6 +420,70 @@ async def on_butoon_ticket(inter, custom_id):
 	if closed:
 		await asyncio.sleep(5)
 		await inter.channel.delete()
+
+
+async def select_ticket_config(inter):	
+	ticket_configs = await Ticket_Config.filter(guild_id=inter.guild.id)
+
+	if not ticket_configs:
+		return "NO_TICKET_CONFIG", None
+
+	option_list = []
+	for ticket_config in ticket_configs:
+		option_list.append(disnake.SelectOption(label=ticket_config.id, value=ticket_config.id))
+
+	view = disnake.ui.View(timeout=10)
+	dropdown = disnake.ui.Select(placeholder="Select the configuration you want to delete", min_values=1, max_values=len(ticket_configs), options=[*option_list])
+	view.add_item(dropdown)
+
+	embed = disnake.Embed(
+		description="Select the configuration you want to delete"
+	)
+
+	msg = await inter.edit_original_message(embed=embed, view=view)
+
+	def check(menu_inter):
+		return menu_inter.author == inter.author and menu_inter.message.id == msg.id
+	try:
+		menu_inter = await inter.bot.wait_for('dropdown', check=check, timeout=60)
+	except asyncio.TimeoutError:
+		return "NOTHING_SELECTED", None
+
+	return "SELECTED", menu_inter.values
+
+async def remove_ticket_config(guild, values):
+	for value in values:
+		ticket_config = await Ticket_Config.filter(id=value, guild_id=guild.id).first()
+
+		if not ticket_config:
+			return "NO_TICKET_CONFIG"
+
+		ticket_config.status = "disabled"
+		await ticket_config.save()
+
+
+		tickets = await Tickets.filter(guild_id=guild.id, config_id=ticket_config.id)
+		ticket_config_channel = guild.get_channel(ticket_config.channel_id)
+
+		if ticket_config_channel:
+			message = ticket_config_channel.get_partial_message(ticket_config.message_id)
+
+			if message:
+				await message.delete()
+
+		if tickets:
+			for ticket in tickets:
+				ticket_channel = guild.get_channel(ticket.ticket_channel)
+
+				if ticket_channel:
+					await ticket_channel.delete()
+
+				ticket.status = "Closed"
+				await ticket.save()
+
+		await ticket_config.delete()
+
+	return "TICKT_CONFIG_REMOVED"
 
 async def get_ticket_message(guild, name):
 	if name == "Create":
