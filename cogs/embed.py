@@ -6,6 +6,8 @@ from colors import *
 from cogs.utils import *
 import re
 
+url_regex = re.compile(r'(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?')
+image_regex = re.compile(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg|webp)')
 class Embed(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
@@ -15,12 +17,10 @@ async def create_embed(guild, title, title_url, description, color, author, auth
 		return "title_or_description_required"
 
 	if title_url:
-		url_regex = re.compile(r'(http|https)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?')
 		correct_url = re.findall(url_regex, title_url)
 
 		if not correct_url:
 			return "not_correct_url"
-
 
 	img_list = []
 	
@@ -35,17 +35,13 @@ async def create_embed(guild, title, title_url, description, color, author, auth
 
 	for img in img_list:
 		if img:
-			image_regex = re.compile(r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg|webp)')
 			correct_image = re.findall(image_regex, img)
 
 			if not correct_image:
 				return "not_correct_image"
 
-
 	if color > 16777215:
 		return "not_correct_color"
-
-
 
 	await Embeds.create(
 		guild_id=guild.id,
