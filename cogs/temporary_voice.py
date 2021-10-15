@@ -108,22 +108,21 @@ class Temporary_Voice(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_voice_state_update(self, user, before, after):
-		guild = user.guild
-		voice_configs = await Temporary_Voice_Config.filter(guild_id=guild.id, status="enabled")
+		voice_configs = await Temporary_Voice_Config.filter(guild_id=user.guild.id, status="enabled")
 
 		if voice_configs:
 			for voice_config in voice_configs:
-				temp_channels = await Temporary_Voice_Channels.filter(guild_id=guild.id, config_id=voice_config.id)
-				voice_channel = guild.get_channel(voice_config.channel_id)
-				voice_category = guild.get_channel(voice_config.category_id)
+				temp_channels = await Temporary_Voice_Channels.filter(guild_id=user.guild.id, config_id=voice_config.id)
+				voice_channel = user.guild.get_channel(voice_config.channel_id)
+				voice_category = user.guild.get_channel(voice_config.category_id)
 
 				if not voice_category:
-					voice_category = await guild.create_category(name="temporary_voice_category", reason="create category for temporary voice")
+					voice_category = await user.guild.create_category(name="temporary_voice_category", reason="create category for temporary voice")
 					voice_config.category_id = voice_category.id
 					await voice_config.save()
 
 				if not voice_channel:
-					voice_channel = await guild.create_voice_channel(name="create", category=voice_category, position=0, reason="create channel for temporary voice")
+					voice_channel = await user.guild.create_voice_channel(name="create", category=voice_category, position=0, reason="create channel for temporary voice")
 					voice_config.channel_id = voice_channel.id
 					await voice_config.save()
 
@@ -141,25 +140,25 @@ class Temporary_Voice(commands.Cog):
 						),
 					}
 
-
 						temp_channel_name = f"{user.name}´s Talk"
 	
 						bitrate = voice_config.bitrate
 	
-						if bitrate < 8 or bitrate > int(guild.bitrate_limit / 1000):
+						if bitrate < 8 or bitrate > int(user.guild.bitrate_limit / 1000):
 							bitrate = 64
 	
-						temp_channel = await guild.create_voice_channel(
+						temp_channel = await user.guild.create_voice_channel(
 							name=temp_channel_name,
 							category=voice_category,
 							overwrites=overwrites,
 							user_limit=voice_config.limit,
 							bitrate=bitrate * 1000,
 						)
+
 						await user.move_to(temp_channel)
 	
 						await Temporary_Voice_Channels.create(
-							guild_id = guild.id,
+							guild_id = user.guild.id,
 							owner_id = user.id,
 							channel_id = temp_channel.id,
 							config_id = voice_config.id,
