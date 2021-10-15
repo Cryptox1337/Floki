@@ -38,8 +38,11 @@ class Temporary_Voice(commands.Cog):
 
 						if temporary_channel:
 							if len(temporary_channel.members) == 0:
-								await temporary_channel.delete()
 								await temporary.delete()
+								try:
+									await temporary_channel.delete()
+								except:
+									pass
 							else:
 								if not temporary_channel.category == voice_category:
 									await temporary_channel.edit(category=voice_category)
@@ -167,8 +170,11 @@ class Temporary_Voice(commands.Cog):
 						for temporary in temp_channels:
 							if len(before.channel.members) == 0:
 								if before.channel.id == temporary.channel_id:
-									await before.channel.delete()
 									await temporary.delete()
+									try:
+										await before.channel.delete()
+									except:
+										pass
 
 							if user.id == temporary.owner_id and not len(before.channel.members) == 0:
 								new_owner = random.choice(before.channel.members)
