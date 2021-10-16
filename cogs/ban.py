@@ -57,6 +57,8 @@ class Ban(commands.Cog):
 		minutes: int = Param(0, desc="enter a number of minutes"),
 		seconds: int = Param(0, desc="enter a number of seconds"),
 	):
+		await inter.response.defer()
+
 		duration = (hours * 60 * 60) + (minutes * 60) + seconds
 
 		if not duration:
@@ -78,9 +80,9 @@ class Ban(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 	@commands.slash_command(name = "unban", description="unban a user")
 	async def unban(
@@ -89,6 +91,7 @@ class Ban(commands.Cog):
 		user: disnake.User,
 		reason: str = Param("no reason", desc="reason for the unban"),
 	):
+		await inter.response.defer()
 
 		status = await unban(inter.guild, inter.author, user, reason)
 
@@ -108,7 +111,7 @@ class Ban(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
-		await inter.response.send_message(embed=embed)		
+		await inter.edit_original_message(embed=embed)	
 
 
 async def ban(guild, author, user, duration, reason):
