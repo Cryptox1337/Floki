@@ -19,6 +19,8 @@ class Auto_Role(commands.Cog):
 		inter: disnake.ApplicationCommandInteraction,
 		role: disnake.Role = Param(None, desc="Select a Role"),
 	):
+		await inter.response.defer()
+
 		status = await create_auto_role(inter.guild, role)
 
 		if status == "AUTO_ROLE_CREATED":
@@ -37,7 +39,7 @@ class Auto_Role(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)
 
-		await inter.response.send_message(embed=embed)			
+		await inter.edit_original_message(embed=embed)
 
 	@commands.Cog.listener()
 	async def on_member_join(self, user):
