@@ -68,6 +68,8 @@ class Mute(commands.Cog):
 		minutes: int = Param(0, desc="enter a number of minutes"),
 		seconds: int = Param(0, desc="enter a number of seconds"),
 	):
+		await inter.response.defer()
+
 		duration = (hours * 60 * 60) + (minutes * 60) + seconds
 
 		if not duration:
@@ -94,9 +96,9 @@ class Mute(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 	@commands.slash_command(name = "unmute", description="unmute a user")
 	async def unmute(
@@ -105,6 +107,7 @@ class Mute(commands.Cog):
 		user: disnake.User,
 		reason: str = Param("no reason", desc="reason for the unmute"),
 	):
+		await inter.response.defer()
 
 		status = await unmute(inter.guild, inter.author, user, reason)
 
@@ -122,9 +125,9 @@ class Mute(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 
 async def mute(guild, author, user, duration, reason):
