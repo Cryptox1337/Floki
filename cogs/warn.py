@@ -17,6 +17,7 @@ class Warn(commands.Cog):
 		user: disnake.User,
 		reason: str = Param("no reason", desc="reason for the warn"),
 	):
+		await inter.response.defer()
 
 		status = await warn(inter.guild, inter.author, user, reason)
 
@@ -34,9 +35,9 @@ class Warn(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 async def warn(guild, author, user, reason):
 	exist = guild.get_member(user.id)
