@@ -34,6 +34,8 @@ class Count_Channel(commands.Cog):
 			]
 		),
 	):
+		await inter.response.defer()
+
 		status = await create_count_channel(inter.guild, count_name, count_type)
 
 		if status == "COUNT_CREATED":
@@ -50,9 +52,9 @@ class Count_Channel(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 	@count_channel.sub_command(name = "remove", description="remove a count channel")
 	async def remove(
@@ -67,6 +69,8 @@ class Count_Channel(commands.Cog):
 			]
 		),
 	):
+		await inter.response.defer()
+
 		status = await remove_count_channel(inter.guild, count_type)
 
 		if status == "COUNT_REMOVED":
@@ -83,9 +87,9 @@ class Count_Channel(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 	@count_channel.sub_command(name = "update", description="update a count channel")
 	async def update(
@@ -107,6 +111,8 @@ class Count_Channel(commands.Cog):
 			]
 		),
 	):
+		await inter.response.defer()
+
 		status = await update_count_channel(inter.guild, new_name, count_type, status)
 
 		if status == "COUNT_UPATED":
@@ -129,9 +135,9 @@ class Count_Channel(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 
 async def create_count_channel(guild, count_name, count_type):
