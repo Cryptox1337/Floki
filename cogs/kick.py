@@ -17,6 +17,7 @@ class Kick(commands.Cog):
 		user: disnake.User,
 		reason: str = Param("no reason", desc="reason for the kick"),
 	):
+		await inter.response.defer()
 
 		status = await kick(inter.guild, inter.author, user, reason)
 
@@ -36,7 +37,7 @@ class Kick(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)		
 
-		await inter.response.send_message(embed=embed)
+		await inter.edit_original_message(embed=embed)
 
 async def kick(guild, author, user, reason):
 	exist = guild.get_member(user.id)
