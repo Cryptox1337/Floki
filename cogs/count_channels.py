@@ -151,7 +151,13 @@ async def create_count_channel(guild, count_name, count_type):
 			if user.bot:
 				count += 1
 
-	channel = await guild.create_voice_channel(name=f"{count_name}: {count}")
+	overwrites = {
+		guild.default_role: disnake.PermissionOverwrite(
+			connect=False
+		)
+	}
+
+	channel = await guild.create_voice_channel(name=f"{count_name}: {count}", overwrites=overwrites)
 
 	await Count_Channels.create(
 		guild_id = guild.id,
