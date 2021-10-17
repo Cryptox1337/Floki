@@ -57,6 +57,7 @@
 	"GENERAL_YES": "Ja",
 	"GENERAL_NO": "Nein",
 
+	"NOTHING_TO_SELECT": "Es gibt nichts zur auswahl!",
 	"NOTHING_SELECTED": "Im Auswahlmenü wurde nichts ausgewählt",
 	"USER_NOT_EXIST": "Dieser Benutzer existiert nicht auf diesem Server!",
 	"NOTHING_TO_CHANGE": "Es war nichts zu ändern!",
