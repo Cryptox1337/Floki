@@ -59,7 +59,7 @@ class Kick(commands.Cog):
 				description=await get_lang(inter.guild, 'NOTHING_FOUND')
 			)
 
-		elif status == "KICK_LIST":
+		elif status == "KICK_LIST" and embed:
 			pass
 
 		else:
