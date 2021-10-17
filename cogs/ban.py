@@ -45,10 +45,12 @@ class Ban(commands.Cog):
 						embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 						await ban_response.send(embed=embed)
 
-
+	@commands.slash_command()
+	async def ban(self, inter):
+		pass
 		
-	@commands.slash_command(name = "ban", description="ban a user")
-	async def ban(
+	@ban.sub_command(name = "ban", description="ban a user")
+	async def ban_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User,
@@ -84,7 +86,7 @@ class Ban(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@commands.slash_command(name = "unban", description="unban a user")
+	@ban.sub_command(name = "unban", description="unban a user")
 	async def unban(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
@@ -113,6 +115,65 @@ class Ban(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)	
 
+	@ban.sub_command(name = "list", description="get a list of the last 8 bans")
+	async def ban_list(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(None,desc="Enter a User")
+	):
+		await inter.response.defer()
+
+		status, embed = await ban_list(inter.guild, user, inter.bot)
+
+		if status == "NOTHING_FOUND":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NOTHING_FOUND')
+			)
+
+		elif status == "BAN_LIST" and embed:
+			pass
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		
+		await inter.edit_original_message(embed=embed)
+
+async def ban_list(guild, user, bot):
+	if user:
+		bans = await Bans.filter(guild_id=guild.id, user_id=user.id).order_by("-date")
+	else:
+		bans = await Bans.filter(guild_id=guild.id).order_by("-date")
+
+	if not bans:
+		return "NOTHING_FOUND", None
+
+	embed = disnake.Embed(
+		title="Latest Bans",
+		)
+
+	count = 0
+	for ban in bans:
+		user = await bot.fetch_user(ban.user_id)
+		
+		if count >= 8:
+			break
+
+		if user:
+			embed.add_field(name="User:", value=user.name)
+		else:
+			embed.add_field(name="User:", value=ban.user_id)
+
+		embed.add_field(name="Date:", value=await convertTimeZone(guild, ban.date))
+		embed.add_field(name="Reason:", value=ban.reason)
+
+		count += 1
+
+	return "BAN_LIST", embed
 
 async def ban(guild, author, user, duration, reason):
 	ban_response = await getResponseChannel(guild, "ban")
