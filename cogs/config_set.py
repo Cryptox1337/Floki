@@ -12,7 +12,7 @@ class Config_Set(commands.Cog):
 	async def set(self, inter):
 		pass
 
-	@set.sub_command(name = 'language')
+	@set.sub_command(name = 'language', description="configure the language of the bot")
 	async def set_language(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
