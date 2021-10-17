@@ -43,7 +43,7 @@ class Kick(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@kick.sub_command(name = "list", description="kick a user")
+	@kick.sub_command(name = "list", description="get a list of the last 8 kicks")
 	async def kick_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
