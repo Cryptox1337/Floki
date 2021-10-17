@@ -4,6 +4,7 @@ from disnake.ext.commands import Param
 from models import *
 from colors import *
 from cogs.utils import *
+import asyncio
 
 class Count_Channel(commands.Cog):
 	def __init__(self, bot):
@@ -24,72 +25,97 @@ class Count_Channel(commands.Cog):
 	async def create(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		count_name: str = Param(desc="enter name of the count channel"),
-		count_type = commands.param(
-			desc="Select an count type that you want to create",
-			choices = [
-				disnake.OptionChoice('User Count', 'user'),
-				disnake.OptionChoice('Bot Count', 'bot'),
-				disnake.OptionChoice('Channel Count', 'channel'),
-			]
-		),
+		count_name: str = Param(desc="enter name of the count channel")
 	):
 		await inter.response.defer()
 
-		status = await create_count_channel(inter.guild, count_name, count_type)
+		status, count_type = await select_count_type(inter, False)
 
-		if status == "COUNT_CREATED":
+		if status == "NOTHING_TO_SELECT":
 			embed = disnake.Embed(
-				color=GREEN,
-				description=await get_lang(inter.guild, 'COUNT_CREATED')
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_TO_SELECT')
 			)
-		elif status == "COUNT_ALREADY_EXIST":
+		elif status == "NOTHING_SELECTED":
 			embed = disnake.Embed(
-				colour=RED,
-				description=await get_lang(inter.guild, 'COUNT_ALREADY_EXIST')
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_SELECTED')
 			)
+
+		elif status == "SELECTED" and count_type:
+			status = await create_count_channel(inter.guild, count_name, count_type)
+
+			if status == "COUNT_CREATED":
+				embed = disnake.Embed(
+					color=GREEN,
+					description=await get_lang(inter.guild, 'COUNT_CREATED')
+				)
+			elif status == "COUNT_ALREADY_EXIST":
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'COUNT_ALREADY_EXIST')
+				)
+			else:
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+				)
+
 		else:
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)
 
-		await inter.edit_original_message(embed=embed)
+		await inter.edit_original_message(embed=embed, view=None)
 
 	@count_channel.sub_command(name = "remove", description="remove a count channel")
 	async def remove(
 		self,
-		inter: disnake.ApplicationCommandInteraction,	
-		count_type = commands.param(
-			desc="Select an count type that you want to create",
-			choices = [
-				disnake.OptionChoice('User Count', 'user'),
-				disnake.OptionChoice('Bot Count', 'bot'),
-				disnake.OptionChoice('Channel Count', 'channel'),
-			]
-		),
+		inter: disnake.ApplicationCommandInteraction
 	):
 		await inter.response.defer()
 
-		status = await remove_count_channel(inter.guild, count_type)
+		status, count_type = await select_count_type(inter, True)
 
-		if status == "COUNT_REMOVED":
+		if status == "NOTHING_TO_SELECT":
 			embed = disnake.Embed(
-				color=GREEN,
-				description=await get_lang(inter.guild, 'COUNT_REMOVED')
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_TO_SELECT')
 			)
-		elif status == "COUNT_NOT_EXIST":
+		elif status == "NOTHING_SELECTED":
 			embed = disnake.Embed(
-				colour=RED,
-				description=await get_lang(inter.guild, 'COUNT_NOT_EXIST')
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_SELECTED')
 			)
+
+		elif status == "SELECTED" and count_type:
+			status = await remove_count_channel(inter.guild, count_type)
+
+			if status == "COUNT_REMOVED":
+				embed = disnake.Embed(
+					color=GREEN,
+					description=await get_lang(inter.guild, 'COUNT_REMOVED')
+				)
+			elif status == "COUNT_NOT_EXIST":
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'COUNT_NOT_EXIST')
+				)
+			else:
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+				)
+
 		else:
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)
 
-		await inter.edit_original_message(embed=embed)
+		await inter.edit_original_message(embed=embed, view=None)
+
 
 	@count_channel.sub_command(name = "update", description="update a count channel")
 	async def update(
@@ -138,6 +164,55 @@ class Count_Channel(commands.Cog):
 			)
 
 		await inter.edit_original_message(embed=embed)
+
+
+async def select_count_type(inter, exist):
+	count_channels = await Count_Channels.filter(guild_id=inter.guild.id)
+	option_list = []
+	if exist:
+		if count_channels:
+			for count_channel in count_channels:
+				option_list.append(disnake.SelectOption(label=count_channel.count_type.capitalize(), value=count_channel.count_type))
+
+	else:
+		count_types = ["channel", "user", "bot"]
+
+		if count_channels:
+			for count_channel in count_channels:
+				for count_type in count_types:
+					if count_type == count_channel.count_type:
+						count_types.remove(count_type)
+
+
+		if count_types:
+			for count_type in count_types:
+				option_list.append(disnake.SelectOption(label=count_type.capitalize(), value=count_type))
+
+	if not option_list:
+		return "NOTHING_TO_SELECT", None
+
+	view = disnake.ui.View(timeout=10)
+	dropdown = disnake.ui.Select(placeholder="choose a type that you want to configure", min_values=1, max_values=1, options=[*option_list])
+	view.add_item(dropdown)
+
+	embed = disnake.Embed(
+		description="choose a type that you want to configure"
+	)
+
+	msg = await inter.edit_original_message(embed=embed, view=view)
+
+	def check(menu_inter):
+		return menu_inter.author == inter.author and menu_inter.message.id == msg.id
+	try:
+		menu_inter = await inter.bot.wait_for('dropdown', check=check, timeout=60)
+	except asyncio.TimeoutError:
+		return "NOTHING_SELECTED", None
+
+	for value in menu_inter.values:
+		count_type = value
+
+	return "SELECTED", count_type
+
 
 
 async def create_count_channel(guild, count_name, count_type):
