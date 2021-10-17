@@ -103,7 +103,7 @@ class Mute(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@commands.slash_command(name = "unmute", description="unmute a user")
+	@mute.sub_command(name = "unmute", description="unmute a user")
 	async def unmute(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
