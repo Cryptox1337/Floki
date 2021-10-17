@@ -57,9 +57,12 @@ class Mute(commands.Cog):
 						muted.status = "unmute"
 						await muted.save()
 
-		
-	@commands.slash_command(name = "mute", description="mute a user")
-	async def mute(
+	@commands.slash_command()
+	async def mute(self, inter):
+		pass
+
+	@mute.sub_command(name = "mute", description="mute a user")
+	async def mute_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User,
@@ -128,6 +131,68 @@ class Mute(commands.Cog):
 			)
 
 		await inter.edit_original_message(embed=embed)
+
+
+	@mute.sub_command(name = "list", description="get a list of the last 8 mutes")
+	async def mute_list(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(None,desc="Enter a User")
+	):
+		await inter.response.defer()
+
+		status, embed = await mute_list(inter.guild, user, inter.bot)
+
+		if status == "NOTHING_FOUND":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NOTHING_FOUND')
+			)
+
+		elif status == "MUTE_LIST" and embed:
+			pass
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		
+		await inter.edit_original_message(embed=embed)
+
+async def mute_list(guild, user, bot):
+	if user:
+		mutes = await Mutes.filter(guild_id=guild.id, user_id=user.id).order_by("-date")
+	else:
+		mutes = await Mutes.filter(guild_id=guild.id).order_by("-date")
+
+	if not mutes:
+		return "NOTHING_FOUND", None
+
+	embed = disnake.Embed(
+		title="Latest Mutes",
+		)
+
+	count = 0
+	for mute in mutes:
+		user = await bot.fetch_user(mute.user_id)
+		
+		if count >= 8:
+			break
+
+		if user:
+			embed.add_field(name="User:", value=user.name)
+		else:
+			embed.add_field(name="User:", value=mute.user_id)
+
+		embed.add_field(name="Date:", value=await convertTimeZone(guild, mute.date))
+		embed.add_field(name="Reason:", value=mute.reason)
+
+		count += 1
+
+	return "MUTE_LIST", embed
+
 
 
 async def mute(guild, author, user, duration, reason):
