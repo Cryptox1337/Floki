@@ -61,5 +61,6 @@
 	"NOTHING_SELECTED": "Nothing was selected in the selection menu",
 	"USER_NOT_EXIST": "This user does not exist on this server!",
 	"NOTHING_TO_CHANGE": "There was nothing to be changed!",
+	"NOTHING_FOUND": "Nothing was found!",
 	"UNKNOWN_ERROR": "Unknown error. Please contact support!"
 }

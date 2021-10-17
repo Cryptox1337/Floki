@@ -10,8 +10,12 @@ class Kick(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-	@commands.slash_command(name = "kick", description="kick a user")
-	async def kick(
+	@commands.slash_command()
+	async def kick(self, inter):
+		pass
+
+	@kick.sub_command(name = "kick", description="kick a user")
+	async def kick_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User,
@@ -35,9 +39,70 @@ class Kick(commands.Cog):
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
-			)		
+			)
 
 		await inter.edit_original_message(embed=embed)
+
+	@kick.sub_command(name = "list", description="kick a user")
+	async def kick_list(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(None,desc="Enter a User")
+	):
+		await inter.response.defer()
+
+		status, embed = await kick_list(inter.guild, user, inter.bot)
+
+		if status == "NOTHING_FOUND":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NOTHING_FOUND')
+			)
+
+		elif status == "KICK_LIST":
+			pass
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		
+		await inter.edit_original_message(embed=embed)
+
+async def kick_list(guild, user, bot):
+	if user:
+		kicks = await Kicks.filter(guild_id=guild.id, user_id=user.id).order_by("-date")
+	else:
+		kicks = await Kicks.filter(guild_id=guild.id).order_by("-date")
+
+	if not kicks:
+		return "NOTHING_FOUND", None
+
+	embed = disnake.Embed(
+		title="Latest Kicks",
+		)
+
+	count = 0
+	for kick in kicks:
+		user = await bot.fetch_user(kick.user_id)
+		
+		if count >= 8:
+			break
+
+		if user:
+			embed.add_field(name="User:", value=user.name)
+		else:
+			embed.add_field(name="User:", value=kick.user_id)
+
+		embed.add_field(name="Date:", value=await convertTimeZone(guild, kick.date))
+		embed.add_field(name="Reason:", value=kick.reason)
+
+		count += 1
+
+	return "KICK_LIST", embed
+
 
 async def kick(guild, author, user, reason):
 	exist = guild.get_member(user.id)
