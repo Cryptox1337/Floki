@@ -10,8 +10,12 @@ class Warn(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-	@commands.slash_command(name = "warn", description="warn a user")
-	async def warn(
+	@commands.slash_command()
+	async def warn(self, inter):
+		pass
+
+	@warn.sub_command(name = "warn", description="warn a user")
+	async def warn_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User,
@@ -38,6 +42,67 @@ class Warn(commands.Cog):
 			)
 
 		await inter.edit_original_message(embed=embed)
+
+
+	@warn.sub_command(name = "list", description="get a list of the last 8 warns")
+	async def warn_list(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(None,desc="Enter a User")
+	):
+		await inter.response.defer()
+
+		status, embed = await warn_list(inter.guild, user, inter.bot)
+
+		if status == "NOTHING_FOUND":
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'NOTHING_FOUND')
+			)
+
+		elif status == "WARN_LIST" and embed:
+			pass
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		
+		await inter.edit_original_message(embed=embed)
+
+async def warn_list(guild, user, bot):
+	if user:
+		warns = await Warns.filter(guild_id=guild.id, user_id=user.id).order_by("-date")
+	else:
+		warns = await Warns.filter(guild_id=guild.id).order_by("-date")
+
+	if not warns:
+		return "NOTHING_FOUND", None
+
+	embed = disnake.Embed(
+		title="Latest Bans",
+		)
+
+	count = 0
+	for warn in warns:
+		user = await bot.fetch_user(warn.user_id)
+		
+		if count >= 8:
+			break
+
+		if user:
+			embed.add_field(name="User:", value=user.name)
+		else:
+			embed.add_field(name="User:", value=warn.user_id)
+
+		embed.add_field(name="Date:", value=await convertTimeZone(guild, warn.date))
+		embed.add_field(name="Reason:", value=warn.reason)
+
+		count += 1
+
+	return "WARN_LIST", embed
 
 async def warn(guild, author, user, reason):
 	exist = guild.get_member(user.id)
