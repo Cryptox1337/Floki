@@ -14,6 +14,8 @@ class Users(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
 	user_id = fields.BigIntField(null=False)
+	level = fields.IntField(null=False, default=0)
+	xp = fields.FloatField(null=False, default=0)
 	warns = fields.IntField(null=False, default=0)
 
 class Channels(Model):
@@ -126,3 +128,7 @@ class Count_Channels(Model):
 	count_type = fields.CharField(null=False, max_length=255)
 	channel_id = fields.BigIntField(null=False)
 	status = fields.CharField(null=False, max_length=255, default="disabled")
+
+class XP_Table(Model):
+	level = fields.IntField(pk=True)
+	xp = fields.FloatField(null=False)
