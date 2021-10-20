@@ -18,7 +18,7 @@ class Level(commands.Cog):
 			user = await Users.filter(guild_id=message.guild.id, user_id=message.author.id).first()
 			if user:
 				_xp_table = await XP_Table.filter()
-				xp = random.uniform(10.0, 25.0)
+				xp = random.uniform(15.0, 25.0)
 				user.xp += xp
 
 				new_level = None
