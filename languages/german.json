@@ -46,6 +46,7 @@
 	"NOT_AUTO_ROLE": "Die Rolle ist keine Autorolle!",
 
 	"RANK_XP_RATE_SET": "Du haben die Erfahrungsrate erfolgreich konfiguriert",
+	"GIVE_XP_SUCCESFULLY": "Du hast {0} erfolgreich {1} erfahrung gegeben",
 
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",

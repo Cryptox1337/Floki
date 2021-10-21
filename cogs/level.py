@@ -16,24 +16,15 @@ class Level(commands.Cog):
 	async def on_message(self, message):
 		if not message.author.bot:
 			guild_settings = await Guilds.filter(guild_id=message.guild.id).first()
-			user = await Users.filter(guild_id=message.guild.id, user_id=message.author.id).first()
-			if user:
-				_xp_table = await XP_Table.filter()
+
+			if guild_settings:
 				xp = random.uniform(15.0, 25.0) * guild_settings.xp_rate
-				user.xp += xp
+				
+				status, new_level = await give_xp(message.guild, message.author, xp)
 
-				new_level = None
-				for xp_table in _xp_table:
-					if user.xp > xp_table.xp:
-						new_level = xp_table.level
-					else:
-						break
-
-				if new_level and not user.level >= new_level:
-					user.level = new_level
+				if new_level:
 					await message.channel.send(f"GG {message.author.mention}, you just advanced to level {new_level}")
 
-				await user.save()
 
 
 
@@ -62,6 +53,54 @@ class Level(commands.Cog):
 			await inter.edit_original_message(embed=embed)
 
 
+	@commands.slash_command(name = "give-xp", description="Give XP to a user")
+	async def give_xp(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(desc="The target @user"),
+		amount: float = Param(desc="Amount of XP to give" , min_value=1, max_value=99999),
+	):
+		await inter.response.defer()
+
+
+		status, new_level = await give_xp(inter.guild, user, amount)
+
+		if status == "GIVE_XP_SUCCESFULLY":
+			embed = disnake.Embed(
+				colour=RED,
+				description=(await get_lang(inter.guild, 'GIVE_XP_SUCCESFULLY')).format(user, amount)
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed)
+
+
+async def give_xp(guild, target, amount):
+	_xp_table = await XP_Table.filter()
+	user = await Users.filter(guild_id=guild.id, user_id=target.id).first()
+	if not user and _xp_table:
+		return "ERROR", None
+
+	user.xp += amount
+
+	new_level = None
+	for xp_table in _xp_table:
+		if user.xp > xp_table.xp:
+			new_level = xp_table.level
+		else:
+			break
+	
+	if new_level and not user.level >= new_level:
+		user.level = new_level
+		await user.save()
+		return "GIVE_XP_SUCCESFULLY", new_level
+
+	await user.save()
+	return "GIVE_XP_SUCCESFULLY", None
 
 
 async def create_level_card(guild, user):
