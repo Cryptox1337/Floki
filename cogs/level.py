@@ -91,9 +91,23 @@ async def create_level_card(guild, user):
 	profile = Editor(await load_image_async(str(avatar))).resize((160, 160)).circle_image()
 	background.paste(profile, (42, 63))
 
-	"""Status Symbol"""
-	background.rectangle((160, 170), width=48, height=48, fill="#000000", radius=100)
-	background.rectangle((164, 174), width=40, height=40, fill="#44B37F", radius=100)
+	member = await guild.getch_member(user.id, strict=True)
+
+	fill = 	None
+	if str(member.status) == "online":
+		fill = 	"#44B37F"
+	elif str(member.status) == "idle":
+		fill = 	"#FAA81A"
+
+	elif str(member.status) == "dnd":
+		fill = 	"#ED4245"
+	elif str(member.status) == "offline":
+		fill = 	"#747F8D"
+
+	if fill:
+		"""Status Symbol"""
+		background.rectangle((160, 170), width=48, height=48, fill="#000000", radius=100)
+		background.rectangle((164, 174), width=40, height=40, fill=fill, radius=100)
 
 
 	currentxp = user_data.xp - current_level_table.xp
