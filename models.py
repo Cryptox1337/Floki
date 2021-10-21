@@ -9,6 +9,7 @@ class Guilds(Model):
 	created = fields.DatetimeField(auto_now_add=True)
 	updated = fields.DatetimeField(auto_now_add=True)
 	mute_role = fields.BigIntField(null=False, default=0)
+	xp_rate = fields.FloatField(null=False, default=1.0)
 
 class Users(Model):
 	id = fields.IntField(pk=True)

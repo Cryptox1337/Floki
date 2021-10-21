@@ -45,6 +45,8 @@
 	"AUTO_ROLE_REMOVED": "Die Auto-Rolle wurde erfolgreich entfernt!",
 	"NOT_AUTO_ROLE": "Die Rolle ist keine Autorolle!",
 
+	"RANK_XP_RATE_SET": "Du haben die Erfahrungsrate erfolgreich konfiguriert",
+
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
 	"GENERAL_REASON": "Grund",

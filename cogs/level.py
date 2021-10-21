@@ -15,10 +15,11 @@ class Level(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		if not message.author.bot:
+			guild_settings = await Guilds.filter(guild_id=message.guild.id).first()
 			user = await Users.filter(guild_id=message.guild.id, user_id=message.author.id).first()
 			if user:
 				_xp_table = await XP_Table.filter()
-				xp = random.uniform(15.0, 25.0)
+				xp = random.uniform(15.0, 25.0) * guild_settings.xp_rate
 				user.xp += xp
 
 				new_level = None
@@ -34,8 +35,13 @@ class Level(commands.Cog):
 
 				await user.save()
 
-	@commands.slash_command(name = "rank", description="get the rank card")
-	async def get_rank_card(
+
+	@commands.slash_command()
+	async def rank(self, inter):
+		pass
+
+	@rank.sub_command(name = "card", description="get the rank card")
+	async def rank_card(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(None),
@@ -56,6 +62,46 @@ class Level(commands.Cog):
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)
 			await inter.edit_original_message(embed=embed)
+
+
+	@rank.sub_command(name = "rate", description="get the rank card")
+	async def rank_card(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		xp_rate = commands.param(
+			desc="Select an response type that you want to configure",
+			choices = [
+				disnake.OptionChoice('x0.25', '0.25'),
+				disnake.OptionChoice('x0.5', '0.5'),
+				disnake.OptionChoice('x1 (default)', '1.0'),
+				disnake.OptionChoice('x1.5', '1.5'),
+				disnake.OptionChoice('x2', '2.0'),
+				disnake.OptionChoice('x2.5', '2.5'),
+				disnake.OptionChoice('x3', '3.0')
+			]
+		),
+	):
+		await inter.response.defer()
+
+		guild_settings = await Guilds.filter(guild_id=inter.guild.id).first()
+
+		if guild_settings:
+			guild_settings.xp_rate = float(xp_rate)
+			await guild_settings.save()
+
+			embed = disnake.Embed(
+				colour=GREEN,
+				description=await get_lang(inter.guild, 'RANK_XP_RATE_SET')
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed)
+
+
 
 async def create_level_card(guild, user):
 	user_data = await Users.filter(guild_id=guild.id, user_id=user.id).first()
