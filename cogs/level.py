@@ -120,7 +120,7 @@ async def give_xp(guild, target, amount):
 		else:
 			break
 	
-	if new_level and not user.level >= new_level:
+	if user.level < new_level:
 		user.level = new_level
 		await user.save()
 		return "GIVE_XP_SUCCESFULLY", new_level
@@ -145,8 +145,8 @@ async def remove_xp(guild, target, amount):
 			new_level = xp_table.level
 		else:
 			break
-	
-	if new_level and user.level > new_level:
+
+	if user.level > new_level:
 		user.level = new_level
 		await user.save()
 		return "REMOVE_XP_SUCCESFULLY", new_level
