@@ -79,6 +79,32 @@ class Level(commands.Cog):
 		await inter.edit_original_message(embed=embed)
 
 
+	@commands.slash_command(name = "remove-xp", description="Take XP away from anyone in the server")
+	async def remove_xp(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(desc="The target @user"),
+		amount: float = Param(desc="Amount of XP to remove" , min_value=1, max_value=99999),
+	):
+		await inter.response.defer()
+
+
+		status, new_level = await remove_xp(inter.guild, user, amount)
+
+		if status == "REMOVE_XP_SUCCESFULLY":
+			embed = disnake.Embed(
+				colour=RED,
+				description=(await get_lang(inter.guild, 'REMOVE_XP_SUCCESFULLY')).format(user, amount)
+			)
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed)		
+
+
 async def give_xp(guild, target, amount):
 	_xp_table = await XP_Table.filter()
 	user = await Users.filter(guild_id=guild.id, user_id=target.id).first()
@@ -101,6 +127,32 @@ async def give_xp(guild, target, amount):
 
 	await user.save()
 	return "GIVE_XP_SUCCESFULLY", None
+
+async def remove_xp(guild, target, amount):
+	_xp_table = await XP_Table.filter()
+	user = await Users.filter(guild_id=guild.id, user_id=target.id).first()
+	if not user and _xp_table:
+		return "ERROR", None
+
+	user.xp -= amount
+
+	if user.xp < 0.0:
+		user.xp = 0
+
+	new_level = None
+	for xp_table in _xp_table:
+		if user.xp > xp_table.xp:
+			new_level = xp_table.level
+		else:
+			break
+	
+	if new_level and user.level > new_level:
+		user.level = new_level
+		await user.save()
+		return "REMOVE_XP_SUCCESFULLY", new_level
+
+	await user.save()
+	return "REMOVE_XP_SUCCESFULLY", None
 
 
 async def create_level_card(guild, user):

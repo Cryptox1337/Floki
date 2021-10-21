@@ -47,6 +47,7 @@
 
 	"RANK_XP_RATE_SET": "Du haben die Erfahrungsrate erfolgreich konfiguriert",
 	"GIVE_XP_SUCCESFULLY": "Du hast {0} erfolgreich {1} erfahrung gegeben",
+	"REMOVE_XP_SUCCESFULLY": "Du hast {0} erfahrung um {1} verringert",
 
 	"GENERAL_USER": "Benutzer",
 	"GENERAL_MODERATOR": "Moderator",
