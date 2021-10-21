@@ -64,7 +64,7 @@ class Level(commands.Cog):
 			await inter.edit_original_message(embed=embed)
 
 
-	@rank.sub_command(name = "rate", description="get the rank card")
+	@rank.sub_command(name = "rate", description="Get your rank or another user's rank")
 	async def rank_card(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
