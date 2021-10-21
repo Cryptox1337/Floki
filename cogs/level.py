@@ -18,15 +18,20 @@ class Level(commands.Cog):
 			guild_settings = await Guilds.filter(guild_id=message.guild.id).first()
 
 			if guild_settings:
+				no_xp_roles = await Roles.filter(guild_id=message.guild.id, xp_role=False)
+
+				if no_xp_roles:
+					for no_xp_role in no_xp_roles:
+						role = message.guild.get_role(no_xp_role.role_id)
+						if role in message.author.roles:
+							return
+
 				xp = random.uniform(15.0, 25.0) * guild_settings.xp_rate
-				
+
 				status, new_level = await give_xp(message.guild, message.author, xp)
 
 				if new_level:
 					await message.channel.send(f"GG {message.author.mention}, you just advanced to level {new_level}")
-
-
-
 
 
 	@commands.slash_command(name = "rank", description="Get your rank or another user's rank")

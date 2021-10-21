@@ -48,6 +48,8 @@
 	"RANK_XP_RATE_SET": "you have configured the experience rate successfully!",
 	"GIVE_XP_SUCCESFULLY": "You gave {0} successfully {1} experience",
 	"REMOVE_XP_SUCCESFULLY": "You removed {0} successfully {1} experience",
+	"XP_ROLE_ALLOWED_SUCCESFULLY": "You successfully allowed the role(s) to gain xp",
+	"XP_ROLE_DISALLOWED_SUCCESFULLY": "You successfully disallowed the role(s) to gain xp",
 
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",

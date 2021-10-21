@@ -5,6 +5,7 @@ from disnake.ext.commands import Param
 from models import *
 from colors import *
 from cogs.utils import *
+import asyncio
 
 class Config_Set(commands.Cog):
 	def __init__(self, bot):
@@ -111,6 +112,106 @@ class Config_Set(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
+
+	@set.sub_command(name = "xp-roles", description="You can set roles here that will allow or disallow users from gaining XP.")
+	async def set_xp_roles(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		option = commands.param(
+			desc="allow or disallow roles to gaining xp",
+			choices = [
+				disnake.OptionChoice('allow', "allow"),
+				disnake.OptionChoice('disallow', "disallow")
+			]
+		),
+	):
+		await inter.response.defer()
+
+		status, role_ids = await select_xp_roles(inter, option)
+
+		if status == "NOTHING_TO_SELECT":
+			embed = disnake.Embed(
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_TO_SELECT')
+			)
+		elif status == "NOTHING_SELECTED":
+			embed = disnake.Embed(
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_SELECTED')
+			)
+
+		elif status == "SELECTED" and role_ids:
+			if option == "allow":
+				description = await get_lang(inter.guild, 'XP_ROLE_ALLOWED_SUCCESFULLY')
+			else:
+				description = await get_lang(inter.guild, 'XP_ROLE_DISALLOWED_SUCCESFULLY')
+
+			embed = disnake.Embed(
+				description=description,
+			)
+
+			for role_id in role_ids:
+				role = await Roles.filter(guild_id=inter.guild.id, role_id=role_id).first()
+				if role:
+					role_obj = inter.guild.get_role(int(role_id))
+					
+					if option == "allow":
+						role.xp_role = True
+					else:
+						role.xp_role = False
+
+					await role.save()
+
+					if role_obj:
+						embed.add_field(name="Role:", value=role_obj.name, inline=False)					
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed, view=None)
+
+
+async def select_xp_roles(inter, option):
+	if option == "allow":
+		roles = await Roles.filter(guild_id=inter.guild.id, xp_role=False)
+	else:
+		roles = await Roles.filter(guild_id=inter.guild.id, xp_role=True)
+
+	if not roles:
+		return "NOTHING_TO_SELECT", None
+
+	option_list = []
+	for role in roles:
+		role_obj = inter.guild.get_role(role.role_id)
+		if role_obj:
+			option_list.append(disnake.SelectOption(label=role_obj.name, value=role_obj.id))
+
+
+	if not option_list:
+		return "NOTHING_TO_SELECT", None
+
+	view = disnake.ui.View(timeout=10)
+	dropdown = disnake.ui.Select(placeholder=f"Choose the roles you want to {option}", min_values=1, max_values=len(option_list), options=[*option_list])
+	view.add_item(dropdown)
+
+	embed = disnake.Embed(
+		description=f"Choose the roles you want to {option}"
+	)
+
+	msg = await inter.edit_original_message(embed=embed, view=view)
+
+	def check(menu_inter):
+		return menu_inter.author == inter.author and menu_inter.message.id == msg.id
+	try:
+		menu_inter = await inter.bot.wait_for('dropdown', check=check, timeout=60)
+	except asyncio.TimeoutError:
+		return "NOTHING_SELECTED", None
+
+
+	return "SELECTED", menu_inter.values
 
 def setup(bot):
 	bot.add_cog(Config_Set(bot))

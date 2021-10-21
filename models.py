@@ -29,6 +29,7 @@ class Roles(Model):
 	guild_id = fields.BigIntField(null=False)
 	role_id = fields.BigIntField(null=False)
 	auto_role = fields.BooleanField(null=True, default=False)
+	xp_role = fields.BooleanField(null=True, default=True)
 
 class Response_Channels(Model):
 	id = fields.IntField(pk=True)
