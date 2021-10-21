@@ -38,11 +38,14 @@ class Level(commands.Cog):
 	async def get_rank_card(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
+		user: disnake.User = Param(None),
 	):
-
 		await inter.response.defer()
 
-		file = await create_level_card(inter.guild, inter.author)
+		if not user:
+			user = inter.author
+
+		file = await create_level_card(inter.guild, user)
 
 		if file:
 			await inter.edit_original_message(file=file)
