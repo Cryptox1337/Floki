@@ -53,7 +53,7 @@ class Ban(commands.Cog):
 	async def ban_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the ban"),
 		hours: int = Param(0, desc="enter a number of hours"),
 		minutes: int = Param(0, desc="enter a number of minutes"),
@@ -90,7 +90,7 @@ class Ban(commands.Cog):
 	async def unban(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the unban"),
 	):
 		await inter.response.defer()
@@ -119,7 +119,7 @@ class Ban(commands.Cog):
 	async def ban_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User = Param(None,desc="Enter a User")
+		user: disnake.User = Param(None, desc="The target @user"),
 	):
 		await inter.response.defer()
 

@@ -18,7 +18,7 @@ class Warn(commands.Cog):
 	async def warn_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the warn"),
 	):
 		await inter.response.defer()
@@ -48,7 +48,7 @@ class Warn(commands.Cog):
 	async def warn_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User = Param(None,desc="Enter a User")
+		user: disnake.User = Param(None, desc="The target @user"),
 	):
 		await inter.response.defer()
 

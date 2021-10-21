@@ -65,7 +65,7 @@ class Mute(commands.Cog):
 	async def mute_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the mute"),
 		hours: int = Param(0, desc="enter a number of hours"),
 		minutes: int = Param(0, desc="enter a number of minutes"),
@@ -107,7 +107,7 @@ class Mute(commands.Cog):
 	async def unmute(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the unmute"),
 	):
 		await inter.response.defer()
@@ -137,7 +137,7 @@ class Mute(commands.Cog):
 	async def mute_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User = Param(None,desc="Enter a User")
+		user: disnake.User = Param(None, desc="The target @user"),
 	):
 		await inter.response.defer()
 

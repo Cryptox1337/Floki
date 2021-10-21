@@ -18,7 +18,7 @@ class Kick(commands.Cog):
 	async def kick_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User,
+		user: disnake.User = Param(desc="The target @user"),
 		reason: str = Param("no reason", desc="reason for the kick"),
 	):
 		await inter.response.defer()
@@ -47,7 +47,7 @@ class Kick(commands.Cog):
 	async def kick_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User = Param(None,desc="Enter a User")
+		user: disnake.User = Param(None, desc="The target @user"),
 	):
 		await inter.response.defer()
 

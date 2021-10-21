@@ -33,7 +33,7 @@ class Level(commands.Cog):
 	async def get_rank(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		user: disnake.User = Param(None),
+		user: disnake.User = Param(None, desc="The target @user"),
 	):
 		await inter.response.defer()
 
