@@ -50,6 +50,8 @@
 	"REMOVE_XP_SUCCESFULLY": "You removed {0} successfully {1} experience",
 	"XP_ROLE_ALLOWED_SUCCESFULLY": "You successfully allowed the role(s) to gain xp",
 	"XP_ROLE_DISALLOWED_SUCCESFULLY": "You successfully disallowed the role(s) to gain xp",
+	"XP_CHANNEL_ALLOWED_SUCCESFULLY": "You successfully allowed the channel(s) to gain xp",
+	"XP_CHANNEL_DISALLOWED_SUCCESFULLY": "You successfully disallowed the channel(s) to gain xp",
 
 	"GENERAL_USER": "User",
 	"GENERAL_MODERATOR": "Moderator",

@@ -173,6 +173,67 @@ class Config_Set(commands.Cog):
 
 		await inter.edit_original_message(embed=embed, view=None)
 
+	@set.sub_command(name = "xp-channels", description="You can set channels here that will allow or disallow users from gaining XP.")
+	async def set_xp_channels(
+		self,
+		inter: disnake.ApplicationCommandInteraction,
+		option = commands.param(
+			desc="allow or disallow channels to gaining xp",
+			choices = [
+				disnake.OptionChoice('allow', "allow"),
+				disnake.OptionChoice('disallow', "disallow")
+			]
+		),
+	):
+		await inter.response.defer()
+
+		status, channel_ids = await select_xp_channels(inter, option)
+
+		if status == "NOTHING_TO_SELECT":
+			embed = disnake.Embed(
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_TO_SELECT')
+			)
+		elif status == "NOTHING_SELECTED":
+			embed = disnake.Embed(
+				color=RED,
+				description=await get_lang(inter.guild, 'NOTHING_SELECTED')
+			)
+
+		elif status == "SELECTED" and channel_ids:
+			if option == "allow":
+				description = await get_lang(inter.guild, 'XP_CHANNEL_ALLOWED_SUCCESFULLY')
+			else:
+				description = await get_lang(inter.guild, 'XP_CHANNEL_DISALLOWED_SUCCESFULLY')
+
+			embed = disnake.Embed(
+				description=description,
+			)
+
+			for channel_id in channel_ids:
+				channel = await Channels.filter(guild_id=inter.guild.id, channel_id=channel_id).first()
+				if channel:
+					channel_obj = inter.guild.get_channel(int(channel_id))
+					
+					if option == "allow":
+						channel.xp_channel = True
+					else:
+						channel.xp_channel = False
+
+					await channel.save()
+
+					if channel_obj:
+						embed.add_field(name="Channel:", value=channel_obj.name, inline=False)					
+
+		else:
+			embed = disnake.Embed(
+				colour=RED,
+				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+			)
+
+		await inter.edit_original_message(embed=embed, view=None)
+
+
 
 async def select_xp_roles(inter, option):
 	if option == "allow":
@@ -199,6 +260,41 @@ async def select_xp_roles(inter, option):
 
 	embed = disnake.Embed(
 		description=f"Choose the roles you want to {option}"
+	)
+
+	msg = await inter.edit_original_message(embed=embed, view=view)
+
+	def check(menu_inter):
+		return menu_inter.author == inter.author and menu_inter.message.id == msg.id
+	try:
+		menu_inter = await inter.bot.wait_for('dropdown', check=check, timeout=60)
+	except asyncio.TimeoutError:
+		return "NOTHING_SELECTED", None
+
+
+	return "SELECTED", menu_inter.values
+
+
+async def select_xp_channels(inter, option):
+	xp_channel = True
+	if option == "allow":
+		xp_channel = False
+
+	option_list = []
+	for channel in inter.guild.text_channels:
+		channel_db = await Channels.filter(guild_id=inter.guild.id, channel_id=channel.id,xp_channel=xp_channel).first()
+		if channel_db:
+			option_list.append(disnake.SelectOption(label=f"# {channel.name}", value=channel.id))
+
+	if not option_list:
+		return "NOTHING_TO_SELECT", None
+
+	view = disnake.ui.View(timeout=10)
+	dropdown = disnake.ui.Select(placeholder=f"Choose the channels you want to {option}", min_values=1, max_values=len(option_list), options=[*option_list])
+	view.add_item(dropdown)
+
+	embed = disnake.Embed(
+		description=f"Choose the channels you want to {option}"
 	)
 
 	msg = await inter.edit_original_message(embed=embed, view=view)

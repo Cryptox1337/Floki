@@ -23,6 +23,7 @@ class Channels(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
 	channel_id = fields.BigIntField(null=False)
+	xp_channel = fields.BooleanField(null=True, default=True)
 
 class Roles(Model):
 	id = fields.IntField(pk=True)

@@ -18,13 +18,14 @@ class Level(commands.Cog):
 			guild_settings = await Guilds.filter(guild_id=message.guild.id).first()
 
 			if guild_settings:
-				no_xp_roles = await Roles.filter(guild_id=message.guild.id, xp_role=False)
+				no_xp_channel = await Channels.filter(guild_id=message.guild.id, channel_id=message.channel.id, xp_channel=False).first()
+				if no_xp_channel:
+					return
 
-				if no_xp_roles:
-					for no_xp_role in no_xp_roles:
-						role = message.guild.get_role(no_xp_role.role_id)
-						if role in message.author.roles:
-							return
+				for role in message.author.roles:
+					no_xp_role = await Roles.filter(guild_id=message.guild.id, role_id=role.id, xp_role=False).first()
+					if no_xp_role:
+						return
 
 				xp = random.uniform(15.0, 25.0) * guild_settings.xp_rate
 
