@@ -45,16 +45,13 @@ class Ban(commands.Cog):
 						embed.add_field(name=await get_lang(guild, 'GENERAL_COUNT'), value="{0}".format(len(await Bans.filter(guild_id=guild.id, user_id=user.id))), inline=False)
 						await ban_response.send(embed=embed)
 
-	@commands.slash_command()
-	async def ban(self, inter):
-		pass
-		
-	@ban.sub_command(name = "ban", description="ban a user")
+
+	@commands.slash_command(name = "ban", description="Bans a user from the server")
 	async def ban_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the ban"),
+		reason: str = Param("no reason", desc="Reason of the Ban"),
 		hours: int = Param(0, desc="enter a number of hours"),
 		minutes: int = Param(0, desc="enter a number of minutes"),
 		seconds: int = Param(0, desc="enter a number of seconds"),
@@ -86,12 +83,12 @@ class Ban(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@ban.sub_command(name = "unban", description="unban a user")
+	@commands.slash_command(name = "unban", description="Unban a user")
 	async def unban(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the unban"),
+		reason: str = Param("no reason", desc="Reason of the Unban"),
 	):
 		await inter.response.defer()
 
@@ -115,7 +112,7 @@ class Ban(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)	
 
-	@ban.sub_command(name = "list", description="get a list of the last 8 bans")
+	@commands.slash_command(name = "ban-list", description="get a list of the last 8 bans")
 	async def ban_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,

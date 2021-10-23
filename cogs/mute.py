@@ -57,16 +57,13 @@ class Mute(commands.Cog):
 						muted.status = "unmute"
 						await muted.save()
 
-	@commands.slash_command()
-	async def mute(self, inter):
-		pass
 
-	@mute.sub_command(name = "mute", description="mute a user")
+	@commands.slash_command(name = "mute", description="Mutes a user from the server")
 	async def mute_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the mute"),
+		reason: str = Param("no reason", desc="Reason of the Mute"),
 		hours: int = Param(0, desc="enter a number of hours"),
 		minutes: int = Param(0, desc="enter a number of minutes"),
 		seconds: int = Param(0, desc="enter a number of seconds"),
@@ -103,12 +100,12 @@ class Mute(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@mute.sub_command(name = "unmute", description="unmute a user")
+	@commands.slash_command(name = "unmute", description="Unmutes a user")
 	async def unmute(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the unmute"),
+		reason: str = Param("no reason", desc="Reason of the Unmute"),
 	):
 		await inter.response.defer()
 
@@ -133,7 +130,7 @@ class Mute(commands.Cog):
 		await inter.edit_original_message(embed=embed)
 
 
-	@mute.sub_command(name = "list", description="get a list of the last 8 mutes")
+	@commands.slash_command(name = "mute-list", description="get a list of the last 8 mutes")
 	async def mute_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,

@@ -10,16 +10,13 @@ class Warn(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-	@commands.slash_command()
-	async def warn(self, inter):
-		pass
 
-	@warn.sub_command(name = "warn", description="warn a user")
+	@commands.slash_command(name = "warn", description="Warns a user from the server")
 	async def warn_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the warn"),
+		reason: str = Param("no reason", desc="Reason of the Warn"),
 	):
 		await inter.response.defer()
 
@@ -44,7 +41,7 @@ class Warn(commands.Cog):
 		await inter.edit_original_message(embed=embed)
 
 
-	@warn.sub_command(name = "list", description="get a list of the last 8 warns")
+	@commands.slash_command(name = "warn-list", description="get a list of the last 8 warns")
 	async def warn_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,

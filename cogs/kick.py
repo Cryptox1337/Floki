@@ -10,16 +10,12 @@ class Kick(commands.Cog):
 	def __init__(self, bot):
 		self.bot: commands.Bot = bot
 
-	@commands.slash_command()
-	async def kick(self, inter):
-		pass
-
-	@kick.sub_command(name = "kick", description="kick a user")
+	@commands.slash_command(name = "kick", description="Kicks a user from the server")
 	async def kick_user(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
 		user: disnake.User = Param(desc="The target @user"),
-		reason: str = Param("no reason", desc="reason for the kick"),
+		reason: str = Param("no reason", desc="Reason of the Kick"),
 	):
 		await inter.response.defer()
 
@@ -43,7 +39,7 @@ class Kick(commands.Cog):
 
 		await inter.edit_original_message(embed=embed)
 
-	@kick.sub_command(name = "list", description="get a list of the last 8 kicks")
+	@commands.slash_command(name = "kick-list", description="get a list of the last 8 kicks")
 	async def kick_list(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
