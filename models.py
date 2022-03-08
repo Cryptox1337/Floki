@@ -95,9 +95,11 @@ class Temporary_Voice_Channels(Model):
 class Ticket_Config(Model):
 	id = fields.IntField(pk=True)
 	guild_id = fields.BigIntField(null=False)
+	title = fields.CharField(null=True, max_length=255)
 	channel_id = fields.BigIntField(null=False)
 	category_id = fields.BigIntField(null=False)
 	message_id = fields.BigIntField(null=False, default=0)
+	embed = fields.BigIntField(null=True, max_length=255)
 	status = fields.CharField(null=False, max_length=255, default="disabled")
 
 class Tickets(Model):

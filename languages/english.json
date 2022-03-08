@@ -26,6 +26,7 @@
 	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} is not correct choose between 8 - {1}!",
 
 	"TICKET_SUCCESSFULLY": "Ticket was created successfully",
+	"TICKET_SELECT_CONFIG": "Select the Ticket Config",
 	"TICKET_CREATE_EMBED": "Create a Ticket",
 	"TICKET_OPEN_EMBED": "If you want to close the ticket, press the button",
 	"TICKET_PENDING_EMBED": "Are you sure you want to close the ticket?",

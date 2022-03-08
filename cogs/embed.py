@@ -40,10 +40,11 @@ async def create_embed(guild, title, title_url, description, color, author, auth
 			if not correct_image:
 				return "not_correct_image"
 
-	if color > 16777215:
-		return "not_correct_color"
+	if color:
+		if color > 16777215:
+			return "not_correct_color"
 
-	await Embeds.create(
+	embed = await Embeds.create(
 		guild_id=guild.id,
 		title=title,
 		title_url=title_url,
@@ -58,10 +59,9 @@ async def create_embed(guild, title, title_url, description, color, author, auth
 		status="enabled",
 	)
 
-	return "embed_created"
+	return "embed_created", embed
 
-async def get_embed(self, table):
-
+async def get_embed(table):
 	if table.color:
 		color = table.color
 	else:
@@ -123,7 +123,6 @@ async def get_embed(self, table):
 
 	if footer or footer_icon:
 		embed.set_footer(text=footer, icon_url=footer_icon)
-
 
 	return embed
 
