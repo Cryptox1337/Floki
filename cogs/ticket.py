@@ -375,12 +375,14 @@ async def create_new_ticket(guild, user, config):
 
 	category = guild.get_channel(config.category_id)
 
+	tickets = await Tickets.filter(guild_id=guild.id, config_id=config.id, status__in=['Open', 'Pending', 'Locked'])
+
 	if not category:
 		category = await guild.create_category(name="ticket_category", reason="create ticket category")
 		config.category_id = category.id
 		await config.save()
 
-	channel = await guild.create_text_channel("user-ticket", overwrites=overwrites, category=category, reason="create ticket channel")
+	channel = await guild.create_text_channel(f"{config.title} {user.name} {len(tickets) + 1}", overwrites=overwrites, category=category, reason="create ticket channel")
 
 	view = disnake.ui.View()
 	buttons = disnake.ui.Button(style=disnake.ButtonStyle.green, label= await get_lang(guild, 'GENERAL_CLOSE'), custom_id="ticket_lock")
