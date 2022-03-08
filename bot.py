@@ -9,6 +9,7 @@ from models import *
 SLASH_COMMAND_GUILDS = (
 	893584194633097227,
 	893584194633097227,
+	899711320230871120,
 )
 
 async def init_db():
