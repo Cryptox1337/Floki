@@ -360,6 +360,9 @@ async def on_butoon_create_ticket(inter):
 			if config.message_id == inter.message.id:
 				await create_new_ticket(inter.guild, inter.author, config)
 
+	embed = disnake.Embed(description = await get_lang(inter.guild, 'TICKET_OPENED'))
+	await inter.response.send_message(embed=embed, ephemeral=True)
+
 
 async def create_new_ticket(guild, user, config):
 	overwrites = {

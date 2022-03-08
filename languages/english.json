@@ -25,6 +25,7 @@
 	"TEMPORARY_INCORRECT_LIMIT": "limit: {0} is not correct choose between 0 - 100!",
 	"TEMPORARY_INCORRECT_BITRATE": "bitrate: {0} is not correct choose between 8 - {1}!",
 
+	"TICKET_OPENED": "Ticket created",
 	"TICKET_SUCCESSFULLY": "Ticket was created successfully",
 	"TICKET_SELECT_CONFIG": "Select the Ticket Config",
 	"TICKET_CREATE_EMBED": "Create a Ticket",
