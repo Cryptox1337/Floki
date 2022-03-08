@@ -28,6 +28,7 @@
 	"TICKET_SUCCESSFULLY": "Ticket was created successfully",
 	"TICKET_SELECT_CONFIG": "Select the Ticket Config",
 	"TICKET_CREATE_EMBED": "Create a Ticket",
+	"TICKET_CREATE_EMBED_SUCCESSFULLY": "Embed successfully created",
 	"TICKET_OPEN_EMBED": "If you want to close the ticket, press the button",
 	"TICKET_PENDING_EMBED": "Are you sure you want to close the ticket?",
 	"TICKET_LOCKED_EMBED": "The ticket is now locked do you want to delete it permanently?",

@@ -20,7 +20,7 @@ class Ticket(commands.Cog):
 	async def create(
 		self,
 		inter: disnake.ApplicationCommandInteraction,
-		title: str = Param("no reason", desc="Title of the Ticket"),
+		title: str = Param(desc="Title of the Ticket"),
 		channel: disnake.TextChannel = Param(None, desc="Select a Text-Channel"),
 		category: disnake.CategoryChannel = Param(None, desc="Select a Categorie"),
 	):
@@ -112,12 +112,23 @@ class Ticket(commands.Cog):
 
 		elif status == "SELECTED" and values:
 			status = await create_ticket_embed(inter.guild, values,embed_title, embed_description)
+
+			if status == "TICKET_CREATE_EMBED_SUCCESSFULLY":
+				embed = disnake.Embed(
+					colour=GREEN,
+					description=await get_lang(inter.guild, 'TICKET_CREATE_EMBED_SUCCESSFULLY')
+				)
+			else:
+				embed = disnake.Embed(
+					colour=RED,
+					description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
+				)
 		else:
 			embed = disnake.Embed(
 				colour=RED,
 				description=await get_lang(inter.guild, 'UNKNOWN_ERROR')
 			)
-##		await inter.edit_original_message(embed=embed, view=None)
+		await inter.edit_original_message(embed=embed, view=None)
 
 	@commands.Cog.listener()
 	async def on_interaction(self, inter: disnake.MessageInteraction):
@@ -327,7 +338,7 @@ async def setup_ticket_config(guild, title, channel, category):
 	else:
 		return
 
-	embed, view = await get_ticket_message(message.guild, None, "Create")
+	embed, view = await get_ticket_message(guild, None, "Create")
 	
 	message = await channel.send(embed=embed, view=view)
 
@@ -480,10 +491,12 @@ async def remove_ticket_config(guild, value):
 	ticket_config_channel = guild.get_channel(ticket_config.channel_id)
 
 	if ticket_config_channel:
-		message = ticket_config_channel.get_partial_message(ticket_config.message_id)
-
-		if message:
-			await message.delete()
+		try:
+			message = ticket_config_channel.get_partial_message(ticket_config.message_id)
+			if message:
+				await message.delete()
+		except:
+			pass
 
 	if tickets:
 		for ticket in tickets:
@@ -525,11 +538,12 @@ async def create_ticket_embed(guild, value, title, description):
 		except:
 			pass
 
-	return "TICKET_CREATE_EMBED"
+	return "TICKET_CREATE_EMBED_SUCCESSFULLY"
 
 async def get_ticket_message(guild, config, name):
 	if name == "Create":
-		if config.embed:
+
+		if config and config.embed:
 			embed_table = await Embeds.filter(id=config.embed, guild_id=guild.id).first()
 
 			if embed_table:
