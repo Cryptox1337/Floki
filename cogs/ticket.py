@@ -335,11 +335,11 @@ async def setup_ticket_config(guild, title, channel, category):
 		await channel.edit(category=category)
 	elif not channel:
 		channel = await guild.create_text_channel(name="ticket_channel", category=category, reason="create ticket channel")
-	else:
+
+	if not category and not channel:
 		return
 
 	embed, view = await get_ticket_message(guild, None, "Create")
-	
 	message = await channel.send(embed=embed, view=view)
 
 	await Ticket_Config.create(
