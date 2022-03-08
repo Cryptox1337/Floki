@@ -182,10 +182,10 @@ async def create_level_card(guild, user):
 	else:
 		avatar = user.default_avatar
 		
-	poppins = Font().poppins(size=38)
-	poppins_middle = Font().poppins(size=35)
-	poppins_small_bold = Font().poppins(variant="bold",size=25)
-	poppins_small = Font().poppins(size=25)
+	poppins = Font.poppins(size=38)
+	poppins_middle = Font.poppins(size=35)
+	poppins_small_bold = Font.poppins(variant="bold",size=25)
+	poppins_small = Font.poppins(size=25)
 
 	"""Canvas"""
 	background = Editor(Canvas((934, 282), color="#23272A"))
